@@ -1,42 +1,81 @@
 "use client";
 
-import { Bell, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Menu, Search, User } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface DashboardHeaderProps {
-  title: string;
+  title?: string;
   description?: string;
   onMenuClick?: () => void;
 }
 
 export function DashboardHeader({
-  title,
-  description,
   onMenuClick,
 }: DashboardHeaderProps) {
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden"
+    <header className="sticky top-0 z-50 flex h-14 items-center border-b bg-background px-4">
+      {/* Mobile Header */}
+      <div className="flex w-full items-center justify-between lg:hidden">
+        <button
+          type="button"
           onClick={onMenuClick}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <Menu className="h-5 w-5" />
-        </Button>
-        <div>
-          <h1 className="text-xl font-semibold">{title}</h1>
-          {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          )}
+        </button>
+
+        <Link href="/dashboard" className="flex items-center">
+          <span className="text-lg font-bold text-foreground">FoodFlow</span>
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <Search className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+          >
+            <User className="h-4 w-4" />
+          </button>
         </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" />
-        </Button>
+
+      {/* Desktop Header */}
+      <div className="hidden w-full items-center justify-between lg:flex">
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className="mr-3 flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <Link href="/dashboard" className="flex items-center">
+            <span className="text-lg font-bold text-foreground">FoodFlow</span>
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search..."
+              className="h-9 w-64 rounded-lg border-border bg-background pl-9 text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted/80"
+          >
+            <User className="h-5 w-5" />
+          </button>
+        </div>
       </div>
     </header>
   );

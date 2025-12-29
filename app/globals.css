@@ -1,33 +1,87 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(240 10% 3.9%);
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(240 10% 3.9%);
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(240 10% 3.9%);
-  --color-primary: hsl(24 95% 53%);
-  --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: hsl(240 4.8% 95.9%);
-  --color-secondary-foreground: hsl(240 5.9% 10%);
-  --color-muted: hsl(240 4.8% 95.9%);
-  --color-muted-foreground: hsl(240 3.8% 46.1%);
-  --color-accent: hsl(240 4.8% 95.9%);
-  --color-accent-foreground: hsl(240 5.9% 10%);
-  --color-destructive: hsl(0 84.2% 60.2%);
-  --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(240 5.9% 90%);
-  --color-input: hsl(240 5.9% 90%);
-  --color-ring: hsl(24 95% 53%);
-  --color-success: hsl(142 76% 36%);
-  --color-success-foreground: hsl(0 0% 100%);
-  --color-warning: hsl(38 92% 50%);
-  --color-warning-foreground: hsl(0 0% 100%);
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  --radius: 0.5rem;
+  /* Font Sizes */
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 30px;
 
-  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* Primary Colors */
+  --color-primary: rgb(121, 80, 242);
+  --color-primary-foreground: rgb(255, 255, 255);
+  --color-primary-light: rgb(243, 240, 255);
+  --color-primary-border: rgb(177, 151, 252);
+
+  /* Secondary */
+  --color-secondary: rgb(248, 249, 250);
+  --color-secondary-foreground: rgb(37, 38, 43);
+
+  /* Accent (Blue) */
+  --color-accent: rgb(34, 139, 230);
+  --color-accent-foreground: rgb(255, 255, 255);
+
+  /* Status Colors */
+  --color-success: rgb(64, 192, 87);
+  --color-success-foreground: rgb(255, 255, 255);
+  --color-destructive: rgb(230, 73, 128);
+  --color-destructive-foreground: rgb(255, 255, 255);
+  --color-warning: rgb(253, 126, 20);
+  --color-warning-foreground: rgb(255, 255, 255);
+
+  /* Text Colors */
+  --color-foreground: rgb(37, 38, 43);
+  --color-muted: rgb(248, 249, 250);
+  --color-muted-foreground: rgb(134, 142, 150);
+
+  /* Background Colors */
+  --color-background: rgb(255, 255, 255);
+  --color-card: rgb(255, 255, 255);
+  --color-card-foreground: rgb(37, 38, 43);
+  --color-popover: rgb(255, 255, 255);
+  --color-popover-foreground: rgb(37, 38, 43);
+
+  /* Border Colors */
+  --color-border: rgb(206, 212, 218);
+  --color-border-light: rgb(222, 226, 230);
+  --color-border-lighter: rgb(233, 236, 239);
+  --color-input: rgb(206, 212, 218);
+  --color-ring: rgb(121, 80, 242);
+
+  /* Social Colors */
+  --color-whatsapp: rgb(37, 211, 102);
+  --color-facebook: rgb(24, 119, 242);
+  --color-telegram: rgb(0, 136, 204);
+
+  /* Dark theme colors */
+  --color-dark: rgb(36, 41, 48);
+  --color-dark-foreground: rgb(255, 255, 255);
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 32px;
+  --radius-circle: 9999px;
+
+  /* Legacy support */
+  --radius: 8px;
 }
 
 @layer base {
@@ -36,29 +90,148 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: var(--font-size-lg);
+    font-weight: 500;
   }
 }
 
+/* Component Utility Classes */
+@layer components {
+  .btn-primary {
+    background-color: var(--color-dark);
+    color: white;
+    border-radius: var(--radius-md);
+    padding: 0 var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .btn-secondary {
+    background-color: rgba(37, 38, 43, 0.1);
+    color: var(--color-foreground);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-md);
+    padding: 0 var(--spacing-lg);
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(37, 38, 43, 0.15);
+  }
+
+  .btn-purple {
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    padding: 0 var(--spacing-md);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+  }
+
+  .btn-purple:hover {
+    opacity: 0.9;
+  }
+
+  .input-field {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0 var(--spacing-md);
+    font-size: var(--font-size-base);
+    height: 36px;
+    line-height: 34px;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+  }
+
+  .input-field:disabled {
+    background-color: var(--color-border-lighter);
+    cursor: not-allowed;
+  }
+
+  .card-purple {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-primary-border);
+  }
+
+  .text-primary-color {
+    color: var(--color-primary);
+  }
+
+  .text-secondary-color {
+    color: var(--color-muted-foreground);
+  }
+
+  .text-muted-color {
+    color: rgb(173, 181, 189);
+  }
+
+  .bg-hover {
+    background-color: rgba(37, 38, 43, 0.1);
+  }
+}
+
+/* Dark Mode */
 .dark {
-  --color-background: hsl(240 10% 3.9%);
-  --color-foreground: hsl(0 0% 98%);
-  --color-card: hsl(240 10% 3.9%);
-  --color-card-foreground: hsl(0 0% 98%);
-  --color-popover: hsl(240 10% 3.9%);
-  --color-popover-foreground: hsl(0 0% 98%);
-  --color-primary: hsl(24 95% 53%);
-  --color-primary-foreground: hsl(0 0% 100%);
-  --color-secondary: hsl(240 3.7% 15.9%);
-  --color-secondary-foreground: hsl(0 0% 98%);
-  --color-muted: hsl(240 3.7% 15.9%);
-  --color-muted-foreground: hsl(240 5% 64.9%);
-  --color-accent: hsl(240 3.7% 15.9%);
-  --color-accent-foreground: hsl(0 0% 98%);
-  --color-destructive: hsl(0 62.8% 30.6%);
-  --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(240 3.7% 15.9%);
-  --color-input: hsl(240 3.7% 15.9%);
-  --color-ring: hsl(24 95% 53%);
+  --color-background: rgb(36, 41, 48);
+  --color-foreground: rgb(255, 255, 255);
+  --color-card: rgb(45, 50, 58);
+  --color-card-foreground: rgb(255, 255, 255);
+  --color-popover: rgb(45, 50, 58);
+  --color-popover-foreground: rgb(255, 255, 255);
+  --color-muted: rgb(55, 60, 68);
+  --color-muted-foreground: rgb(173, 181, 189);
+  --color-border: rgb(55, 60, 68);
+  --color-input: rgb(55, 60, 68);
+  --color-secondary: rgb(55, 60, 68);
+  --color-secondary-foreground: rgb(255, 255, 255);
 }

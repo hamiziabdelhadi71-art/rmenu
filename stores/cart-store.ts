@@ -19,8 +19,10 @@ interface CartState {
   restaurantSlug: string | null;
   restaurantId: string | null;
   items: CartItem[];
+  source: string;
 
   setRestaurant: (slug: string, id: string) => void;
+  setSource: (source: string) => void;
   addItem: (item: Omit<CartItem, "id">) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   removeItem: (itemId: string) => void;
@@ -28,6 +30,7 @@ interface CartState {
 
   getSubtotal: () => number;
   getItemCount: () => number;
+  getSource: () => string;
 }
 
 export const useCartStore = create<CartState>()(
@@ -36,14 +39,23 @@ export const useCartStore = create<CartState>()(
       restaurantSlug: null,
       restaurantId: null,
       items: [],
+      source: "direct",
 
       setRestaurant: (slug, id) => {
         const currentSlug = get().restaurantSlug;
         if (currentSlug && currentSlug !== slug) {
           // Clear cart if switching restaurants
-          set({ restaurantSlug: slug, restaurantId: id, items: [] });
+          set({ restaurantSlug: slug, restaurantId: id, items: [], source: "direct" });
         } else {
           set({ restaurantSlug: slug, restaurantId: id });
+        }
+      },
+
+      setSource: (source) => {
+        // Only set source if it's not already set (first touch attribution)
+        const currentSource = get().source;
+        if (currentSource === "direct" && source !== "direct") {
+          set({ source });
         }
       },
 
@@ -92,6 +104,10 @@ export const useCartStore = create<CartState>()(
 
       getItemCount: () => {
         return get().items.reduce((count, item) => count + item.quantity, 0);
+      },
+
+      getSource: () => {
+        return get().source;
       },
     }),
     {

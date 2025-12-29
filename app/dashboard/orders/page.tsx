@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { DashboardHeader } from "@/components/dashboard/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -245,12 +244,12 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="flex flex-col">
-      <DashboardHeader
-        title="Orders"
-        description="Manage your incoming orders in real-time"
-      />
-      <div className="flex-1 p-6">
+    <div className="flex-1 p-6">
+      {/* Page Title */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Orders</h1>
+        <p className="text-muted-foreground">Manage your incoming orders in real-time</p>
+      </div>
         {/* Filters */}
         <div className="mb-6 flex gap-2">
           {["active", "completed", "cancelled", "all"].map((f) => (
@@ -375,7 +374,6 @@ export default function OrdersPage() {
             })}
           </div>
         )}
-      </div>
     </div>
   );
 }

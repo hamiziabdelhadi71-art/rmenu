@@ -30,13 +30,10 @@ export default function CheckoutPage() {
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
-    customerEmail: "",
     deliveryAddress: "",
-    deliveryNotes: "",
-    notes: "",
   });
 
-  const { items, restaurantId, getSubtotal, clearCart } = useCartStore();
+  const { items, restaurantId, getSubtotal, getSource, clearCart } = useCartStore();
   const { toast } = useToast();
   const supabase = createClient();
 
@@ -107,18 +104,18 @@ export default function CheckoutPage() {
         restaurant_id: restaurantId,
         customer_name: formData.customerName,
         customer_phone: formData.customerPhone,
-        customer_email: formData.customerEmail || null,
+        customer_email: null,
         order_type: orderType,
         delivery_address:
           orderType === "delivery" ? formData.deliveryAddress : null,
-        delivery_notes:
-          orderType === "delivery" ? formData.deliveryNotes : null,
+        delivery_notes: null,
         status: "pending",
         subtotal: subtotal,
         tax_amount: taxAmount,
         delivery_fee: deliveryFee,
         total: total,
-        notes: formData.notes || null,
+        notes: null,
+        source: getSource(),
       };
 
       const { data: orderResult, error: orderError } = await supabase
@@ -300,21 +297,6 @@ export default function CheckoutPage() {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email (optional)</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.customerEmail}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        customerEmail: e.target.value,
-                      }))
-                    }
-                    placeholder="your@email.com"
-                  />
-                </div>
               </CardContent>
             </Card>
 
@@ -324,7 +306,7 @@ export default function CheckoutPage() {
                 <CardHeader>
                   <CardTitle>Delivery Address</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent>
                   <div className="space-y-2">
                     <Label htmlFor="address">Address *</Label>
                     <Input
@@ -340,41 +322,9 @@ export default function CheckoutPage() {
                       required={orderType === "delivery"}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="deliveryNotes">
-                      Delivery Instructions (optional)
-                    </Label>
-                    <Input
-                      id="deliveryNotes"
-                      value={formData.deliveryNotes}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          deliveryNotes: e.target.value,
-                        }))
-                      }
-                      placeholder="e.g., Ring doorbell, leave at door..."
-                    />
-                  </div>
                 </CardContent>
               </Card>
             )}
-
-            {/* Order Notes */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Order Notes (optional)</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Input
-                  value={formData.notes}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, notes: e.target.value }))
-                  }
-                  placeholder="Any special requests for your order..."
-                />
-              </CardContent>
-            </Card>
           </div>
 
           {/* Right Column - Summary */}

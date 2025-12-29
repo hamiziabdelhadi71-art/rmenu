@@ -15,7 +15,16 @@
       "Bash(npm run build:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout:*)",
+      "Bash(if exist \"C:\\\\Users\\\\hadi\\\\Desktop\\\\Rmenu\\\\.next\" rmdir /s /q \"C:\\\\Users\\\\hadi\\\\Desktop\\\\Rmenu\\\\.next\")",
+      "mcp__supabase__execute_sql",
+      "Bash(npx supabase migration:*)",
+      "Bash(findstr:*)",
+      "Bash(npx supabase:*)",
+      "Skill(frontend-design)",
+      "WebFetch(domain:www.take.app)"
     ]
   },
   "enableAllProjectMcpServers": true,

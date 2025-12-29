@@ -24,6 +24,7 @@ export type Database = {
           tax_rate: number;
           delivery_fee: number;
           theme_primary_color: string;
+          template_name: string | null;
           operating_hours: Json;
           delivery_zones: string[];
           created_at: string;
@@ -43,6 +44,7 @@ export type Database = {
           tax_rate?: number;
           delivery_fee?: number;
           theme_primary_color?: string;
+          template_name?: string | null;
           operating_hours?: Json;
           delivery_zones?: string[];
           created_at?: string;
@@ -62,6 +64,7 @@ export type Database = {
           tax_rate?: number;
           delivery_fee?: number;
           theme_primary_color?: string;
+          template_name?: string | null;
           operating_hours?: Json;
           delivery_zones?: string[];
           created_at?: string;
@@ -115,6 +118,7 @@ export type Database = {
           is_available: boolean;
           tags: string[];
           display_order: number;
+          sizes: { name: string; price: number }[];
           created_at: string;
           updated_at: string;
         };
@@ -129,6 +133,7 @@ export type Database = {
           is_available?: boolean;
           tags?: string[];
           display_order?: number;
+          sizes?: { name: string; price: number }[];
           created_at?: string;
           updated_at?: string;
         };
@@ -143,6 +148,7 @@ export type Database = {
           is_available?: boolean;
           tags?: string[];
           display_order?: number;
+          sizes?: { name: string; price: number }[];
           created_at?: string;
           updated_at?: string;
         };
@@ -157,6 +163,7 @@ export type Database = {
           is_required: boolean;
           min_select: number;
           max_select: number;
+          is_size_group: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -169,6 +176,7 @@ export type Database = {
           is_required?: boolean;
           min_select?: number;
           max_select?: number;
+          is_size_group?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -181,6 +189,7 @@ export type Database = {
           is_required?: boolean;
           min_select?: number;
           max_select?: number;
+          is_size_group?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -263,6 +272,7 @@ export type Database = {
           delivery_fee: number;
           total: number;
           notes: string | null;
+          source: string;
           created_at: string;
           updated_at: string;
           confirmed_at: string | null;
@@ -291,6 +301,7 @@ export type Database = {
           delivery_fee?: number;
           total: number;
           notes?: string | null;
+          source?: string;
           created_at?: string;
           updated_at?: string;
           confirmed_at?: string | null;
@@ -319,6 +330,7 @@ export type Database = {
           delivery_fee?: number;
           total?: number;
           notes?: string | null;
+          source?: string;
           created_at?: string;
           updated_at?: string;
           confirmed_at?: string | null;

@@ -3,12 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { DashboardHeader } from "@/components/dashboard/header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Store, Receipt, Percent } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Tables } from "@/types/database";
 
@@ -97,35 +92,132 @@ export default function SettingsPage() {
     }
   };
 
+  const cardStyle: React.CSSProperties = {
+    backgroundColor: "white",
+    borderRadius: "8px",
+    border: "1px solid #e5e7eb",
+    marginBottom: "16px",
+    width: "100%",
+    boxSizing: "border-box",
+  };
+
+  const cardHeaderStyle: React.CSSProperties = {
+    padding: "12px 16px 0 16px",
+  };
+
+  const cardTitleStyle: React.CSSProperties = {
+    fontSize: "14px",
+    fontWeight: 600,
+    color: "#111827",
+    margin: 0,
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  };
+
+  const cardContentStyle: React.CSSProperties = {
+    padding: "12px 16px 16px 16px",
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    height: "36px",
+    padding: "0 10px",
+    fontSize: "13px",
+    border: "1px solid #d1d5db",
+    borderRadius: "6px",
+    backgroundColor: "white",
+    outline: "none",
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: "13px",
+    fontWeight: 500,
+    color: "#374151",
+    marginBottom: "4px",
+  };
+
+  const helpTextStyle: React.CSSProperties = {
+    fontSize: "11px",
+    color: "#6b7280",
+    marginTop: "4px",
+  };
+
+  const primaryButtonStyle: React.CSSProperties = {
+    height: "38px",
+    padding: "0 20px",
+    fontSize: "13px",
+    fontWeight: 600,
+    border: "none",
+    borderRadius: "6px",
+    backgroundColor: "#7950f2",
+    color: "white",
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "6px",
+  };
+
+  const iconStyle: React.CSSProperties = {
+    width: "16px",
+    height: "16px",
+    color: "#7950f2",
+  };
+
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <Loader2 style={{ width: "32px", height: "32px", color: "#7950f2", animation: "spin 1s linear infinite" }} />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col">
-      <DashboardHeader
-        title="Store Settings"
-        description="Configure your store preferences"
-      />
-      <div className="flex-1 p-6">
-        <form onSubmit={handleSubmit} className="mx-auto max-w-2xl space-y-6">
+    <div style={{
+      width: "100%",
+      minHeight: "100%",
+      padding: "20px",
+      boxSizing: "border-box",
+      display: "flex",
+      justifyContent: "center"
+    }}>
+      <div style={{ width: "100%", maxWidth: "560px" }}>
+        {/* Page Title */}
+        <div style={{ marginBottom: "16px" }}>
+          <h1 style={{ fontSize: "18px", fontWeight: 600, color: "#111827", margin: 0 }}>Paramètres</h1>
+          <p style={{ fontSize: "12px", color: "#6b7280", margin: "4px 0 0 0" }}>Configurez les préférences de votre magasin</p>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           {/* Store Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Store Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
+          <div style={cardStyle}>
+            <div style={cardHeaderStyle}>
+              <h3 style={cardTitleStyle}>
+                <Store style={iconStyle} />
+                Statut du magasin
+              </h3>
+            </div>
+            <div style={cardContentStyle}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "12px",
+                  borderRadius: "6px",
+                  backgroundColor: formData.is_active ? "#f0fdf4" : "#fef2f2",
+                  border: `1px solid ${formData.is_active ? "#bbf7d0" : "#fecaca"}`,
+                }}
+              >
                 <div>
-                  <p className="font-medium">Accept Orders</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p style={{ fontSize: "13px", fontWeight: 500, color: "#111827", margin: 0 }}>Accepter les commandes</p>
+                  <p style={{ fontSize: "11px", color: "#6b7280", margin: "2px 0 0 0" }}>
                     {formData.is_active
-                      ? "Your store is currently accepting orders"
-                      : "Your store is currently closed"}
+                      ? "Votre magasin accepte les commandes"
+                      : "Votre magasin est fermé"}
                   </p>
                 </div>
                 <button
@@ -136,105 +228,141 @@ export default function SettingsPage() {
                       is_active: !prev.is_active,
                     }))
                   }
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    formData.is_active ? "bg-primary" : "bg-muted"
-                  }`}
+                  style={{
+                    position: "relative",
+                    width: "44px",
+                    height: "24px",
+                    borderRadius: "12px",
+                    border: "none",
+                    cursor: "pointer",
+                    backgroundColor: formData.is_active ? "#7950f2" : "#d1d5db",
+                    transition: "background-color 0.2s",
+                  }}
                 >
                   <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      formData.is_active ? "translate-x-6" : "translate-x-1"
-                    }`}
+                    style={{
+                      position: "absolute",
+                      top: "2px",
+                      left: formData.is_active ? "22px" : "2px",
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "10px",
+                      backgroundColor: "white",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+                      transition: "left 0.2s",
+                    }}
                   />
                 </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Order Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Order Settings</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="minimum_order">Minimum Order Amount ($)</Label>
-                <Input
-                  id="minimum_order"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.minimum_order}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      minimum_order: e.target.value,
-                    }))
-                  }
-                  placeholder="0.00"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Customers must order at least this amount for delivery
-                </p>
+          <div style={cardStyle}>
+            <div style={cardHeaderStyle}>
+              <h3 style={cardTitleStyle}>
+                <Receipt style={iconStyle} />
+                Paramètres de commande
+              </h3>
+            </div>
+            <div style={cardContentStyle}>
+              <div style={{ display: "grid", gap: "14px" }}>
+                <div>
+                  <label style={labelStyle}>Montant minimum de commande (DZD)</label>
+                  <div style={{ position: "relative" }}>
+                    <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>DZD</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={formData.minimum_order}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          minimum_order: e.target.value,
+                        }))
+                      }
+                      placeholder="0.00"
+                      style={{ ...inputStyle, paddingLeft: "40px" }}
+                    />
+                  </div>
+                  <p style={helpTextStyle}>
+                    Les clients doivent commander au moins ce montant
+                  </p>
+                </div>
+                <div>
+                  <label style={labelStyle}>Frais de livraison (DZD)</label>
+                  <div style={{ position: "relative" }}>
+                    <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>DZD</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={formData.delivery_fee}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          delivery_fee: e.target.value,
+                        }))
+                      }
+                      placeholder="0.00"
+                      style={{ ...inputStyle, paddingLeft: "40px" }}
+                    />
+                  </div>
+                  <p style={helpTextStyle}>
+                    Frais facturés pour les commandes de livraison
+                  </p>
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="delivery_fee">Delivery Fee ($)</Label>
-                <Input
-                  id="delivery_fee"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.delivery_fee}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      delivery_fee: e.target.value,
-                    }))
-                  }
-                  placeholder="0.00"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Fee charged for delivery orders
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Tax Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Tax Settings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Label htmlFor="tax_rate">Tax Rate (%)</Label>
-                <Input
-                  id="tax_rate"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="100"
-                  value={formData.tax_rate}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      tax_rate: e.target.value,
-                    }))
-                  }
-                  placeholder="0"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Tax percentage applied to orders (e.g., 10 for 10%)
+          <div style={cardStyle}>
+            <div style={cardHeaderStyle}>
+              <h3 style={cardTitleStyle}>
+                <Percent style={iconStyle} />
+                Paramètres de taxe
+              </h3>
+            </div>
+            <div style={cardContentStyle}>
+              <div>
+                <label style={labelStyle}>Taux de taxe (%)</label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="100"
+                    value={formData.tax_rate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        tax_rate: e.target.value,
+                      }))
+                    }
+                    placeholder="0"
+                    style={{ ...inputStyle, paddingRight: "30px" }}
+                  />
+                  <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>%</span>
+                </div>
+                <p style={helpTextStyle}>
+                  Pourcentage de taxe appliqué aux commandes (ex: 10 pour 10%)
                 </p>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Submit */}
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isSaving} size="lg">
-              {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save Settings
-            </Button>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button
+              type="submit"
+              disabled={isSaving}
+              style={{ ...primaryButtonStyle, opacity: isSaving ? 0.7 : 1, cursor: isSaving ? "not-allowed" : "pointer" }}
+            >
+              {isSaving && <Loader2 style={{ width: "14px", height: "14px", animation: "spin 1s linear infinite" }} />}
+              Enregistrer
+            </button>
           </div>
         </form>
       </div>
