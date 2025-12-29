@@ -4,18 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Utensils, Loader2 } from "lucide-react";
+import { MessageCircle, Loader2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
@@ -64,59 +53,245 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <Link href="/" className="mb-4 inline-flex items-center justify-center gap-2">
-            <Utensils className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">FoodFlow</span>
+    <>
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap');
+      `}</style>
+
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        fontFamily: "'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+      }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '420px',
+        }}>
+          {/* Back to home */}
+          <Link
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: '#6b7280',
+              fontSize: '14px',
+              textDecoration: 'none',
+              marginBottom: '24px',
+            }}
+          >
+            <ArrowLeft size={16} />
+            Back to home
           </Link>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
-          <CardDescription>
-            Sign in to your account to manage your restaurant
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleLogin}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+
+          {/* Card */}
+          <div style={{
+            background: 'white',
+            borderRadius: '24px',
+            padding: '40px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e5e7eb',
+          }}>
+            {/* Logo */}
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <Link href="/" style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                textDecoration: 'none',
+              }}>
+                <div style={{
+                  width: '44px',
+                  height: '44px',
+                  background: '#22c55e',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                }}>
+                  <MessageCircle size={24} />
+                </div>
+                <span style={{
+                  fontFamily: "'Bricolage Grotesque', sans-serif",
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: '#111827',
+                }}>Take</span>
+              </Link>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+
+            {/* Title */}
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <h1 style={{
+                fontFamily: "'Bricolage Grotesque', sans-serif",
+                fontSize: '28px',
+                fontWeight: 700,
+                color: '#111827',
+                margin: '0 0 8px',
+              }}>
+                Welcome back
+              </h1>
+              <p style={{
+                fontSize: '15px',
+                color: '#6b7280',
+                margin: 0,
+              }}>
+                Sign in to manage your store
+              </p>
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign In
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-primary hover:underline">
+
+            {/* Form */}
+            <form onSubmit={handleLogin}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  marginBottom: '8px',
+                }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  style={{
+                    width: '100%',
+                    height: '48px',
+                    padding: '0 16px',
+                    fontSize: '15px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '12px',
+                    outline: 'none',
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
+                    boxSizing: 'border-box',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#22c55e';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#d1d5db';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px',
+                }}>
+                  <label style={{
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: '#374151',
+                  }}>
+                    Password
+                  </label>
+                  <Link href="/forgot-password" style={{
+                    fontSize: '13px',
+                    color: '#22c55e',
+                    textDecoration: 'none',
+                  }}>
+                    Forgot password?
+                  </Link>
+                </div>
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  style={{
+                    width: '100%',
+                    height: '48px',
+                    padding: '0 16px',
+                    fontSize: '15px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '12px',
+                    outline: 'none',
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
+                    boxSizing: 'border-box',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#22c55e';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#d1d5db';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                style={{
+                  width: '100%',
+                  height: '48px',
+                  background: '#22c55e',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  opacity: isLoading ? 0.7 : 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'background 0.2s',
+                }}
+                onMouseOver={(e) => !isLoading && (e.currentTarget.style.background = '#16a34a')}
+                onMouseOut={(e) => (e.currentTarget.style.background = '#22c55e')}
+              >
+                {isLoading && <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />}
+                Sign In
+              </button>
+            </form>
+
+            {/* Footer */}
+            <p style={{
+              textAlign: 'center',
+              fontSize: '14px',
+              color: '#6b7280',
+              marginTop: '24px',
+              marginBottom: 0,
+            }}>
+              Don&apos;t have an account?{' '}
+              <Link href="/register" style={{
+                color: '#22c55e',
+                textDecoration: 'none',
+                fontWeight: 500,
+              }}>
                 Sign up
               </Link>
             </p>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </>
   );
 }
