@@ -334,10 +334,31 @@ export default function ProfilePage() {
                         </div>
                         <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
                           <p style={{ fontSize: "13px", fontWeight: 500, color: "#111827", margin: 0 }}>{link.name}</p>
-                          <p style={{ fontSize: "11px", color: "#6b7280", margin: "1px 0 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <a
+                            href={fullUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ fontSize: "11px", color: "#6b7280", margin: "1px 0 0 0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block", textDecoration: "none" }}
+                          >
                             {fullUrl}
-                          </p>
+                          </a>
                         </div>
+                        <a
+                          href={fullUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            ...buttonStyle,
+                            flexShrink: 0,
+                            height: "32px",
+                            width: "32px",
+                            padding: 0,
+                            textDecoration: "none",
+                          }}
+                          title="Ouvrir le lien"
+                        >
+                          <ExternalLink style={{ width: "14px", height: "14px", color: "#6b7280" }} />
+                        </a>
                         <button
                           type="button"
                           onClick={() => copyMarketingLink(link.id)}
