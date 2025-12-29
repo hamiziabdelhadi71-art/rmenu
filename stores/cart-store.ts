@@ -52,9 +52,8 @@ export const useCartStore = create<CartState>()(
       },
 
       setSource: (source) => {
-        // Only set source if it's not already set (first touch attribution)
-        const currentSource = get().source;
-        if (currentSource === "direct" && source !== "direct") {
+        // Always update source when visiting with a marketing link
+        if (source && source !== "direct") {
           set({ source });
         }
       },
@@ -87,7 +86,7 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => {
-        set({ items: [] });
+        set({ items: [], source: "direct" });
       },
 
       getSubtotal: () => {
