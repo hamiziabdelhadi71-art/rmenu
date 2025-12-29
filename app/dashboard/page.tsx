@@ -9,6 +9,10 @@ import {
   Plus,
   Calendar,
   Share2,
+  Instagram,
+  Facebook,
+  Link2,
+  Globe,
 } from "lucide-react";
 import "./dashboard.css";
 
@@ -102,6 +106,7 @@ export default async function DashboardPage() {
     { data: recentOrders },
     { count: totalOrders30Days },
     { data: orders30Days },
+    { data: ordersWithSource },
   ] = await Promise.all([
     // Today's orders count
     supabase
@@ -136,12 +141,42 @@ export default async function DashboardPage() {
       .eq("restaurant_id", restaurant.id)
       .gte("created_at", thirtyDaysAgo.toISOString())
       .in("status", ["confirmed", "preparing", "ready", "delivered"]),
+    // Orders with source for analytics
+    supabase
+      .from("orders")
+      .select("source, total")
+      .eq("restaurant_id", restaurant.id)
+      .gte("created_at", thirtyDaysAgo.toISOString())
+      .in("status", ["confirmed", "preparing", "ready", "delivered"]),
   ]);
 
   const todayRevenue =
     todayOrders?.reduce((sum, order) => sum + Number(order.total), 0) || 0;
   const revenue30Days =
     orders30Days?.reduce((sum, order) => sum + Number(order.total), 0) || 0;
+
+  // Calculate source analytics
+  const sourceAnalytics = (ordersWithSource || []).reduce((acc, order) => {
+    const source = order.source || "direct";
+    if (!acc[source]) {
+      acc[source] = { count: 0, revenue: 0 };
+    }
+    acc[source].count += 1;
+    acc[source].revenue += Number(order.total);
+    return acc;
+  }, {} as Record<string, { count: number; revenue: number }>);
+
+  // Define source config for display
+  const sourceConfig: Record<string, { name: string; icon: typeof Instagram; bgColor: string; textColor: string }> = {
+    instagram: { name: "Instagram", icon: Instagram, bgColor: "linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)", textColor: "white" },
+    tiktok: { name: "TikTok", icon: Link2, bgColor: "#000000", textColor: "white" },
+    facebook: { name: "Facebook", icon: Facebook, bgColor: "#1877f2", textColor: "white" },
+    direct: { name: "Direct", icon: Globe, bgColor: "#6b7280", textColor: "white" },
+  };
+
+  // Get sorted sources by order count
+  const sortedSources = Object.entries(sourceAnalytics)
+    .sort((a, b) => b[1].count - a[1].count);
 
   // Format dates for display
   const startDate = thirtyDaysAgo.toLocaleDateString("fr-FR", { month: "long", day: "numeric", year: "numeric" });
@@ -282,6 +317,126 @@ export default async function DashboardPage() {
                     />
                   ))}
                 </div>
+              </div>
+            </div>
+
+            {/* Social Media Analytics Card */}
+            <div style={cardStyle}>
+              <div style={{
+                padding: "12px 16px",
+                borderBottom: "1px solid #f3f4f6",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between"
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#111827", margin: 0 }}>Sources des commandes</h3>
+                  <span style={{ fontSize: "11px", color: "#9ca3af" }}>Derniers 30 jours</span>
+                </div>
+                <Link href="/dashboard/profile" style={{ textDecoration: "none" }}>
+                  <button style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    padding: "4px 8px",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    color: "#6b7280",
+                    cursor: "pointer"
+                  }}>
+                    Liens
+                    <ArrowRight style={{ width: "12px", height: "12px" }} />
+                  </button>
+                </Link>
+              </div>
+              <div style={{ padding: "16px" }}>
+                {sortedSources.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {sortedSources.map(([source, data]) => {
+                      const config = sourceConfig[source] || {
+                        name: source.charAt(0).toUpperCase() + source.slice(1),
+                        icon: Globe,
+                        bgColor: "#6b7280",
+                        textColor: "white"
+                      };
+                      const Icon = config.icon;
+                      const totalOrders = Object.values(sourceAnalytics).reduce((sum, s) => sum + s.count, 0);
+                      const percentage = totalOrders > 0 ? Math.round((data.count / totalOrders) * 100) : 0;
+
+                      return (
+                        <div key={source} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                          {/* Icon */}
+                          <div style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "8px",
+                            background: config.bgColor,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0
+                          }}>
+                            <Icon style={{ width: "18px", height: "18px", color: config.textColor }} />
+                          </div>
+
+                          {/* Info */}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+                              <span style={{ fontSize: "13px", fontWeight: 500, color: "#111827" }}>{config.name}</span>
+                              <span style={{ fontSize: "13px", fontWeight: 600, color: "#111827" }}>{data.count} commandes</span>
+                            </div>
+                            {/* Progress bar */}
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              <div style={{
+                                flex: 1,
+                                height: "6px",
+                                backgroundColor: "#f3f4f6",
+                                borderRadius: "3px",
+                                overflow: "hidden"
+                              }}>
+                                <div style={{
+                                  width: `${percentage}%`,
+                                  height: "100%",
+                                  background: config.bgColor,
+                                  borderRadius: "3px",
+                                  transition: "width 0.3s ease"
+                                }} />
+                              </div>
+                              <span style={{ fontSize: "11px", color: "#6b7280", minWidth: "32px" }}>{percentage}%</span>
+                            </div>
+                            {/* Revenue */}
+                            <p style={{ fontSize: "11px", color: "#6b7280", margin: "4px 0 0 0" }}>
+                              DZD {data.revenue.toFixed(2)} de ventes
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: "center", padding: "24px 16px" }}>
+                    <div style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "50%",
+                      backgroundColor: "#f3f4f6",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto 12px"
+                    }}>
+                      <Share2 style={{ width: "24px", height: "24px", color: "#9ca3af" }} />
+                    </div>
+                    <p style={{ fontSize: "13px", color: "#6b7280", margin: "0 0 4px 0" }}>
+                      Aucune donnée de source
+                    </p>
+                    <p style={{ fontSize: "12px", color: "#9ca3af", margin: 0 }}>
+                      Partagez vos liens marketing pour suivre les sources
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
