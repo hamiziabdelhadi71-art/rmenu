@@ -1052,18 +1052,19 @@ export default function MenuPage() {
 
                 return (
                   <Card key={category.id}>
-                    <CardHeader className="flex flex-row items-center justify-between">
+                    <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-3">
-                        <GripVertical className="h-5 w-5 text-muted-foreground" />
-                        <CardTitle>{category.name}</CardTitle>
-                        <span className="text-sm text-muted-foreground">
-                          ({categoryItems.length} produits)
+                        <GripVertical className="h-5 w-5 text-muted-foreground hidden sm:block" />
+                        <CardTitle className="text-base sm:text-lg">{category.name}</CardTitle>
+                        <span className="text-xs sm:text-sm text-muted-foreground">
+                          ({categoryItems.length})
                         </span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <Button
                           variant="outline"
                           size="sm"
+                          className="flex-1 sm:flex-none"
                           onClick={() => {
                             setSelectedCategoryId(category.id);
                             setShowItemForm(true);
@@ -1078,7 +1079,8 @@ export default function MenuPage() {
                           }}
                         >
                           <Plus className="mr-1 h-4 w-4" />
-                          Ajouter produit
+                          <span className="hidden sm:inline">Ajouter produit</span>
+                          <span className="sm:hidden">Ajouter</span>
                         </Button>
                         <Button
                           variant="ghost"
@@ -1110,68 +1112,72 @@ export default function MenuPage() {
                           {categoryItems.map((item) => (
                             <div
                               key={item.id}
-                              className={`flex items-center gap-4 rounded-lg border p-4 ${
+                              className={`rounded-lg border p-3 sm:p-4 ${
                                 !item.is_available ? "opacity-50" : ""
                               }`}
                             >
-                              <GripVertical className="h-5 w-5 text-muted-foreground" />
-                              {item.image_url ? (
-                                <img
-                                  src={item.image_url}
-                                  alt={item.name}
-                                  className="h-16 w-16 rounded-lg object-cover"
-                                />
-                              ) : (
-                                <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted">
-                                  <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                                </div>
-                              )}
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-medium">{item.name}</h4>
-                                  {getItemModifierCount(item.id) > 0 && (
-                                    <span className="flex items-center gap-1 rounded bg-primary/10 px-1.5 py-0.5 text-xs text-primary">
-                                      <SlidersHorizontal className="h-3 w-3" />
-                                      {getItemModifierCount(item.id)} options
-                                    </span>
-                                  )}
-                                </div>
-                                {item.description && (
-                                  <p className="text-sm text-muted-foreground line-clamp-1">
-                                    {item.description}
-                                  </p>
+                              <div className="flex items-start gap-3">
+                                {/* Image */}
+                                {item.image_url ? (
+                                  <img
+                                    src={item.image_url}
+                                    alt={item.name}
+                                    className="h-12 w-12 sm:h-16 sm:w-16 rounded-lg object-cover flex-shrink-0"
+                                  />
+                                ) : (
+                                  <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+                                    <ImageIcon className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
+                                  </div>
                                 )}
-                              </div>
-                              <div className="text-right">
-                                <p className="font-semibold">
-                                  ${Number(item.base_price).toFixed(2)}
-                                </p>
-                                <button
-                                  onClick={() => toggleItemAvailability(item)}
-                                  className={`text-xs ${
-                                    item.is_available
-                                      ? "text-green-600"
-                                      : "text-red-600"
-                                  }`}
-                                >
-                                  {item.is_available ? "Disponible" : "Indisponible"}
-                                </button>
-                              </div>
-                              <div className="flex gap-1">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => openEditItem(item)}
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => handleDeleteItem(item.id)}
-                                >
-                                  <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
+                                {/* Content */}
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="min-w-0">
+                                      <h4 className="font-medium text-sm sm:text-base truncate">{item.name}</h4>
+                                      <p className="font-semibold text-sm sm:text-base text-primary">
+                                        ${Number(item.base_price).toFixed(2)}
+                                      </p>
+                                    </div>
+                                    {/* Action buttons - always visible */}
+                                    <div className="flex gap-1 flex-shrink-0">
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={() => openEditItem(item)}
+                                      >
+                                        <Pencil className="h-4 w-4" />
+                                      </Button>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-8 w-8"
+                                        onClick={() => handleDeleteItem(item.id)}
+                                      >
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                  {/* Status and options row */}
+                                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                    <button
+                                      onClick={() => toggleItemAvailability(item)}
+                                      className={`text-xs px-2 py-0.5 rounded-full ${
+                                        item.is_available
+                                          ? "bg-green-100 text-green-700"
+                                          : "bg-red-100 text-red-700"
+                                      }`}
+                                    >
+                                      {item.is_available ? "Disponible" : "Indisponible"}
+                                    </button>
+                                    {getItemModifierCount(item.id) > 0 && (
+                                      <span className="flex items-center gap-1 rounded bg-primary/10 px-1.5 py-0.5 text-xs text-primary">
+                                        <SlidersHorizontal className="h-3 w-3" />
+                                        {getItemModifierCount(item.id)} options
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           ))}
