@@ -109,9 +109,10 @@ export default function RestaurantPage() {
   useEffect(() => {
     const source = searchParams.get("src") || searchParams.get("utm_source");
     if (source) {
-      cartStore.setSource(source.toLowerCase());
+      // Use getState to avoid dependency on cartStore which causes infinite re-renders
+      useCartStore.getState().setSource(source.toLowerCase());
     }
-  }, [searchParams, cartStore]);
+  }, [searchParams]);
 
   if (isLoading) {
     return (
