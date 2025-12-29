@@ -125,55 +125,56 @@ export default function MenuPage() {
 
     setRestaurant(restaurantData);
 
-    // Load categories
-    const { data: categoriesData } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("restaurant_id", restaurantData.id)
-      .order("display_order", { ascending: true });
+    // Load all data in PARALLEL for faster loading
+    const [
+      { data: categoriesData },
+      { data: itemsData },
+      { data: groupsData },
+    ] = await Promise.all([
+      supabase
+        .from("categories")
+        .select("*")
+        .eq("restaurant_id", restaurantData.id)
+        .order("display_order", { ascending: true }),
+      supabase
+        .from("menu_items")
+        .select("*")
+        .eq("restaurant_id", restaurantData.id)
+        .order("display_order", { ascending: true }),
+      supabase
+        .from("modifier_groups")
+        .select("*")
+        .eq("restaurant_id", restaurantData.id)
+        .order("created_at", { ascending: true }),
+    ]);
 
     setCategories(categoriesData || []);
-
-    // Load menu items
-    const { data: itemsData } = await supabase
-      .from("menu_items")
-      .select("*")
-      .eq("restaurant_id", restaurantData.id)
-      .order("display_order", { ascending: true });
-
     setMenuItems(itemsData || []);
-
-    // Load modifier groups
-    const { data: groupsData } = await supabase
-      .from("modifier_groups")
-      .select("*")
-      .eq("restaurant_id", restaurantData.id)
-      .order("created_at", { ascending: true });
-
     setModifierGroups(groupsData || []);
 
-    // Load modifiers
-    if (groupsData && groupsData.length > 0) {
-      const groupIds = groupsData.map((g) => g.id);
-      const { data: modifiersData } = await supabase
-        .from("modifiers")
-        .select("*")
-        .in("group_id", groupIds)
-        .order("display_order", { ascending: true });
+    // Load modifiers and links in parallel (depend on previous data)
+    const modifierPromise = groupsData && groupsData.length > 0
+      ? supabase
+          .from("modifiers")
+          .select("*")
+          .in("group_id", groupsData.map((g) => g.id))
+          .order("display_order", { ascending: true })
+      : Promise.resolve({ data: [] });
 
-      setModifiers(modifiersData || []);
-    }
+    const linksPromise = itemsData && itemsData.length > 0
+      ? supabase
+          .from("menu_item_modifier_groups")
+          .select("*")
+          .in("menu_item_id", itemsData.map((i) => i.id))
+      : Promise.resolve({ data: [] });
 
-    // Load item-modifier links
-    if (itemsData && itemsData.length > 0) {
-      const itemIds = itemsData.map((i) => i.id);
-      const { data: linksData } = await supabase
-        .from("menu_item_modifier_groups")
-        .select("*")
-        .in("menu_item_id", itemIds);
+    const [{ data: modifiersData }, { data: linksData }] = await Promise.all([
+      modifierPromise,
+      linksPromise,
+    ]);
 
-      setItemModifierLinks(linksData || []);
-    }
+    setModifiers(modifiersData || []);
+    setItemModifierLinks(linksData || []);
 
     setIsLoading(false);
   }

@@ -89,53 +89,57 @@ export default async function DashboardPage() {
     );
   }
 
-  // Get today's orders count
+  // Prepare date filters
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  const { count: todayOrdersCount } = await supabase
-    .from("orders")
-    .select("*", { count: "exact", head: true })
-    .eq("restaurant_id", restaurant.id)
-    .gte("created_at", today.toISOString());
-
-  // Get today's revenue
-  const { data: todayOrders } = await supabase
-    .from("orders")
-    .select("total")
-    .eq("restaurant_id", restaurant.id)
-    .gte("created_at", today.toISOString())
-    .in("status", ["confirmed", "preparing", "ready", "delivered"]);
-
-  const todayRevenue =
-    todayOrders?.reduce((sum, order) => sum + Number(order.total), 0) || 0;
-
-  // Get recent orders (last 30 days for chart)
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data: recentOrders } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("restaurant_id", restaurant.id)
-    .order("created_at", { ascending: false })
-    .limit(5);
+  // Run all queries in PARALLEL for faster loading
+  const [
+    { count: todayOrdersCount },
+    { data: todayOrders },
+    { data: recentOrders },
+    { count: totalOrders30Days },
+    { data: orders30Days },
+  ] = await Promise.all([
+    // Today's orders count
+    supabase
+      .from("orders")
+      .select("*", { count: "exact", head: true })
+      .eq("restaurant_id", restaurant.id)
+      .gte("created_at", today.toISOString()),
+    // Today's revenue
+    supabase
+      .from("orders")
+      .select("total")
+      .eq("restaurant_id", restaurant.id)
+      .gte("created_at", today.toISOString())
+      .in("status", ["confirmed", "preparing", "ready", "delivered"]),
+    // Recent orders (last 5)
+    supabase
+      .from("orders")
+      .select("*")
+      .eq("restaurant_id", restaurant.id)
+      .order("created_at", { ascending: false })
+      .limit(5),
+    // 30 days orders count
+    supabase
+      .from("orders")
+      .select("*", { count: "exact", head: true })
+      .eq("restaurant_id", restaurant.id)
+      .gte("created_at", thirtyDaysAgo.toISOString()),
+    // 30 days revenue
+    supabase
+      .from("orders")
+      .select("total")
+      .eq("restaurant_id", restaurant.id)
+      .gte("created_at", thirtyDaysAgo.toISOString())
+      .in("status", ["confirmed", "preparing", "ready", "delivered"]),
+  ]);
 
-  // Get total orders count (last 30 days)
-  const { count: totalOrders30Days } = await supabase
-    .from("orders")
-    .select("*", { count: "exact", head: true })
-    .eq("restaurant_id", restaurant.id)
-    .gte("created_at", thirtyDaysAgo.toISOString());
-
-  // Get total revenue (last 30 days)
-  const { data: orders30Days } = await supabase
-    .from("orders")
-    .select("total")
-    .eq("restaurant_id", restaurant.id)
-    .gte("created_at", thirtyDaysAgo.toISOString())
-    .in("status", ["confirmed", "preparing", "ready", "delivered"]);
-
+  const todayRevenue =
+    todayOrders?.reduce((sum, order) => sum + Number(order.total), 0) || 0;
   const revenue30Days =
     orders30Days?.reduce((sum, order) => sum + Number(order.total), 0) || 0;
 
