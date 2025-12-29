@@ -10,6 +10,7 @@ import {
   Calendar,
   Share2,
 } from "lucide-react";
+import "./dashboard.css";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -169,22 +170,10 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div style={{
-      width: "100%",
-      minHeight: "100%",
-      padding: "20px",
-      boxSizing: "border-box",
-      display: "flex",
-      justifyContent: "center"
-    }}>
-      <div style={{ width: "100%", maxWidth: "900px" }}>
+    <div className="dashboard-container">
+      <div className="dashboard-content">
         {/* Header with restaurant name and share button */}
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "20px"
-        }}>
+        <div className="dashboard-header" style={{ marginBottom: "20px" }}>
           <h1 style={{ fontSize: "18px", fontWeight: 600, color: "#111827", margin: 0 }}>
             {restaurant.name}
           </h1>
@@ -208,8 +197,8 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Main Grid Layout */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: "16px" }}>
+        {/* Main Grid Layout - responsive */}
+        <div className="dashboard-grid" style={{ display: "grid", gap: "16px" }}>
           {/* Left Column */}
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {/* Date Range & Stats Card */}
@@ -226,18 +215,18 @@ export default async function DashboardPage() {
                   <span>{startDate} – {endDate}</span>
                 </div>
               </div>
-              <div style={{ padding: "16px", display: "flex", gap: "32px" }}>
+              <div className="dashboard-stats" style={{ padding: "16px" }}>
                 <div>
                   <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "2px" }}>Points de vue</p>
-                  <p style={{ fontSize: "22px", fontWeight: 600, color: "#111827", margin: 0 }}>0</p>
+                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>0</p>
                 </div>
                 <div>
                   <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "2px" }}>Commandes</p>
-                  <p style={{ fontSize: "22px", fontWeight: 600, color: "#111827", margin: 0 }}>{totalOrders30Days || 0}</p>
+                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>{totalOrders30Days || 0}</p>
                 </div>
                 <div>
                   <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "2px" }}>Vente</p>
-                  <p style={{ fontSize: "22px", fontWeight: 600, color: "#111827", margin: 0 }}>DZD {revenue30Days.toFixed(2)}</p>
+                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>DZD {revenue30Days.toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -271,11 +260,8 @@ export default async function DashboardPage() {
               </div>
               <div style={{ padding: "16px" }}>
                 {/* Simple chart placeholder - shows empty state or bars */}
-                <div style={{
+                <div className="chart-bars" style={{
                   height: "80px",
-                  display: "flex",
-                  alignItems: "flex-end",
-                  gap: "3px",
                   paddingBottom: "6px",
                   borderBottom: "1px solid #f3f4f6"
                 }}>
@@ -328,11 +314,8 @@ export default async function DashboardPage() {
                   recentOrders.map((order, index) => (
                     <div
                       key={order.id}
+                      className="order-item"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "10px 16px",
                         borderBottom: index < recentOrders.length - 1 ? "1px solid #f3f4f6" : "none"
                       }}
                     >
@@ -344,7 +327,7 @@ export default async function DashboardPage() {
                           {new Date(order.created_at).toLocaleString("fr-FR")}
                         </p>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div className="order-item-right">
                         <span style={{ fontSize: "13px", fontWeight: 500, color: "#111827" }}>
                           DZD {Number(order.total).toFixed(2)}
                         </span>

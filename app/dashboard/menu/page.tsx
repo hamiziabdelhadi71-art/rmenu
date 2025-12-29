@@ -732,7 +732,7 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="flex-1 p-6">
+    <div className="flex-1 p-4 sm:p-6">
       {/* Page Title */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Gestion du Menu</h1>

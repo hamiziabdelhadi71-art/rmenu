@@ -249,7 +249,7 @@ export default function ProfilePage() {
     <div style={{
       width: "100%",
       minHeight: "100%",
-      padding: "20px",
+      padding: "16px",
       boxSizing: "border-box",
       display: "flex",
       justifyContent: "center"

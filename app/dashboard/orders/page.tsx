@@ -244,14 +244,14 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="flex-1 p-6">
+    <div className="flex-1 p-4 sm:p-6">
       {/* Page Title */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Orders</h1>
-        <p className="text-muted-foreground">Manage your incoming orders in real-time</p>
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">Orders</h1>
+        <p className="text-sm text-muted-foreground">Manage your incoming orders in real-time</p>
       </div>
         {/* Filters */}
-        <div className="mb-6 flex gap-2">
+        <div className="mb-4 sm:mb-6 flex flex-wrap gap-2">
           {["active", "completed", "cancelled", "all"].map((f) => (
             <Button
               key={f}
