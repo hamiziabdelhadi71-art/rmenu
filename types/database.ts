@@ -376,6 +376,35 @@ export type Database = {
           created_at?: string;
         };
       };
+      page_views: {
+        Row: {
+          id: string;
+          restaurant_id: string;
+          viewed_at: string;
+          page_path: string | null;
+          referrer: string | null;
+          user_agent: string | null;
+          session_id: string | null;
+        };
+        Insert: {
+          id?: string;
+          restaurant_id: string;
+          viewed_at?: string;
+          page_path?: string | null;
+          referrer?: string | null;
+          user_agent?: string | null;
+          session_id?: string | null;
+        };
+        Update: {
+          id?: string;
+          restaurant_id?: string;
+          viewed_at?: string;
+          page_path?: string | null;
+          referrer?: string | null;
+          user_agent?: string | null;
+          session_id?: string | null;
+        };
+      };
     };
     Views: {};
     Functions: {};

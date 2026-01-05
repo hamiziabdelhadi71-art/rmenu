@@ -62,6 +62,7 @@ export default function AppetiteTemplate({
   const [activeCategory, setActiveCategory] = useState<string | null>(categories[0]?.id || null);
   const [scrolled, setScrolled] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
@@ -216,6 +217,11 @@ export default function AppetiteTemplate({
   };
 
   const primaryColor = restaurant?.theme_primary_color || "#e85d04";
+
+  // Add cache-busting timestamp to logo URL
+  const logoUrl = restaurant.logo_url
+    ? `${restaurant.logo_url}?t=${restaurant.updated_at || Date.now()}`
+    : null;
 
   return (
     <>
@@ -393,11 +399,12 @@ export default function AppetiteTemplate({
                   flexShrink: 0,
                 }}
               >
-                {restaurant.logo_url ? (
+                {logoUrl && !logoError ? (
                   <img
-                    src={restaurant.logo_url}
+                    src={logoUrl}
                     alt={restaurant.name}
                     style={{ width: "100%", height: "100%", borderRadius: 12, objectFit: "cover" }}
+                    onError={() => setLogoError(true)}
                   />
                 ) : (
                   <div

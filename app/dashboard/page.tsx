@@ -107,6 +107,7 @@ export default async function DashboardPage() {
     { count: totalOrders30Days },
     { data: orders30Days },
     { data: ordersWithSource },
+    { count: pageViews30Days },
   ] = await Promise.all([
     // Today's orders count
     supabase
@@ -148,6 +149,12 @@ export default async function DashboardPage() {
       .eq("restaurant_id", restaurant.id)
       .gte("created_at", thirtyDaysAgo.toISOString())
       .in("status", ["confirmed", "preparing", "ready", "delivered"]),
+    // Page views in last 30 days
+    supabase
+      .from("page_views")
+      .select("*", { count: "exact", head: true })
+      .eq("restaurant_id", restaurant.id)
+      .gte("viewed_at", thirtyDaysAgo.toISOString()),
   ]);
 
   const todayRevenue =
@@ -257,7 +264,7 @@ export default async function DashboardPage() {
               <div className="dashboard-stats" style={{ padding: "16px" }}>
                 <div>
                   <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "2px" }}>Points de vue</p>
-                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>0</p>
+                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>{pageViews30Days || 0}</p>
                 </div>
                 <div>
                   <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "2px" }}>Commandes</p>

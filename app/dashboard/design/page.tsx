@@ -25,6 +25,7 @@ import {
   Cake,
   Utensils,
   Check,
+  Cookie,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Tables } from "@/types/database";
@@ -70,6 +71,19 @@ const templates = [
     },
     features: ["Soft colors", "Rounded shapes", "Playful animations"],
   },
+  {
+    id: "bakery",
+    name: "Bakery",
+    description: "Pink & playful for desserts & sweets",
+    icon: Cookie,
+    colors: {
+      primary: "#EC4899",
+      bg: "#FFF5F7",
+      card: "#FFFFFF",
+      accent: "#BE185D",
+    },
+    features: ["2-column grid", "Heart favorites", "Pink gradient modal"],
+  },
 ];
 
 export default function DesignPage() {
@@ -80,6 +94,7 @@ export default function DesignPage() {
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [previewKey, setPreviewKey] = useState(0);
   const [mobileView, setMobileView] = useState<"settings" | "preview">("settings");
+  const [logoPreviewError, setLogoPreviewError] = useState(false);
 
   const [design, setDesign] = useState({
     primaryColor: "#7950f2",
@@ -170,6 +185,7 @@ export default function DesignPage() {
       } = supabase.storage.from("restaurant-logos").getPublicUrl(fileName);
 
       setDesign((prev) => ({ ...prev, logoUrl: publicUrl }));
+      setLogoPreviewError(false); // Reset error state when new logo is uploaded
 
       toast({
         title: "Image uploaded",
@@ -251,6 +267,11 @@ export default function DesignPage() {
   // Ensure we have a valid slug for the preview
   const previewUrl = restaurant.slug ? `/${restaurant.slug}` : null;
 
+  // Add cache-busting to logo URL
+  const displayLogoUrl = design.logoUrl
+    ? `${design.logoUrl}?t=${Date.now()}`
+    : "";
+
   // Design Panel Content (reused for both mobile and desktop)
   const DesignPanelContent = () => (
     <div className="space-y-6">
@@ -262,11 +283,12 @@ export default function DesignPage() {
         </div>
         <div className="flex items-center gap-3">
           <div className="relative h-16 w-16 overflow-hidden rounded-full border border-[#e9ecef] bg-[#f8f9fa]">
-            {design.logoUrl ? (
+            {displayLogoUrl && !logoPreviewError ? (
               <img
-                src={design.logoUrl}
+                src={displayLogoUrl}
                 alt="Logo"
                 className="h-full w-full object-cover"
+                onError={() => setLogoPreviewError(true)}
               />
             ) : (
               <div

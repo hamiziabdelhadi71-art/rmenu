@@ -206,6 +206,15 @@ export default function OrdersPage() {
 
       if (error) throw error;
 
+      // Update local state immediately
+      setOrders((prev) =>
+        prev.map((order) =>
+          order.id === orderId
+            ? { ...order, ...updateData }
+            : order
+        )
+      );
+
       toast({
         title: "Order updated",
         description: `Order status changed to ${statusConfig[newStatus].label}`,
@@ -264,7 +273,7 @@ export default function OrdersPage() {
           ))}
         </div>
 
-        {/* Orders Grid */}
+        {/* Orders Display */}
         {filteredOrders.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
@@ -277,7 +286,69 @@ export default function OrdersPage() {
               </p>
             </CardContent>
           </Card>
+        ) : filter === "completed" || filter === "cancelled" ? (
+          /* Table View for Completed/Cancelled Orders */
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-muted/50 border-b">
+                    <tr>
+                      <th className="text-left p-4 font-medium text-sm">Date</th>
+                      <th className="text-left p-4 font-medium text-sm">Customer</th>
+                      <th className="text-left p-4 font-medium text-sm hidden sm:table-cell">Phone</th>
+                      <th className="text-left p-4 font-medium text-sm hidden md:table-cell">Items</th>
+                      <th className="text-left p-4 font-medium text-sm">Type</th>
+                      <th className="text-right p-4 font-medium text-sm">Total</th>
+                      <th className="text-center p-4 font-medium text-sm">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredOrders.map((order) => {
+                      const config = statusConfig[order.status];
+                      const StatusIcon = config.icon;
+                      return (
+                        <tr key={order.id} className="border-b last:border-0 hover:bg-muted/30">
+                          <td className="p-4 text-sm">
+                            <div>{new Date(order.created_at).toLocaleDateString()}</div>
+                            <div className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                          </td>
+                          <td className="p-4">
+                            <div className="font-medium text-sm">{order.customer_name}</div>
+                            <div className="text-xs text-muted-foreground sm:hidden">{order.customer_phone}</div>
+                          </td>
+                          <td className="p-4 text-sm hidden sm:table-cell">
+                            <a href={`tel:${order.customer_phone}`} className="hover:underline text-muted-foreground">
+                              {order.customer_phone}
+                            </a>
+                          </td>
+                          <td className="p-4 text-sm hidden md:table-cell">
+                            <div className="max-w-[200px] truncate text-muted-foreground">
+                              {order.order_items?.map(item => `${item.quantity}x ${item.item_name}`).join(", ")}
+                            </div>
+                          </td>
+                          <td className="p-4 text-sm">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${order.order_type === 'delivery' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
+                              {order.order_type === 'delivery' ? 'Delivery' : 'Pickup'}
+                            </span>
+                          </td>
+                          <td className="p-4 text-sm font-semibold text-right">${Number(order.total).toFixed(2)}</td>
+                          <td className="p-4 text-center">
+                            <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${config.color}`}>
+                              <StatusIcon className="h-3 w-3" />
+                              {config.label}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         ) : (
+          /* Card Grid for Active Orders */
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredOrders.map((order) => {
               const config = statusConfig[order.status];

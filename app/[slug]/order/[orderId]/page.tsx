@@ -16,6 +16,7 @@ import {
   Phone,
   Loader2,
   ArrowLeft,
+  MessageCircle,
 } from "lucide-react";
 import type { Tables } from "@/types/database";
 
@@ -121,6 +122,43 @@ export default function OrderTrackingPage() {
       ? statusSteps.filter((step) => step.key !== "out_for_delivery")
       : statusSteps;
 
+  // Generate WhatsApp URL for sending order to restaurant
+  const getWhatsAppUrl = () => {
+    if (!restaurant?.phone || !order) return null;
+
+    const orderItemsList = order.order_items
+      ?.map((item) => {
+        let itemText = `• ${item.quantity}x ${item.item_name}`;
+        if (item.notes) {
+          itemText += ` - Note: ${item.notes}`;
+        }
+        return itemText;
+      })
+      .join("\n") || "";
+
+    const whatsappMessage = `🆕 *New Order #${order.id.slice(-6).toUpperCase()}*
+
+📋 *Order Details:*
+${orderItemsList}
+
+💰 *Payment:*
+Subtotal: $${Number(order.subtotal).toFixed(2)}
+${Number(order.tax_amount) > 0 ? `Tax: $${Number(order.tax_amount).toFixed(2)}\n` : ""}${Number(order.delivery_fee) > 0 ? `Delivery: $${Number(order.delivery_fee).toFixed(2)}\n` : ""}*Total: $${Number(order.total).toFixed(2)}*
+
+👤 *Customer:*
+Name: ${order.customer_name}
+Phone: ${order.customer_phone}
+
+📦 *Order Type:* ${order.order_type === "delivery" ? "Delivery" : "Pickup"}
+${order.order_type === "delivery" && order.delivery_address ? `📍 *Address:* ${order.delivery_address}` : ""}`;
+
+    // Clean phone number (remove spaces, dashes, etc.)
+    const cleanPhone = restaurant.phone.replace(/[\s\-\(\)]/g, "");
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+  };
+
+  const whatsappUrl = getWhatsAppUrl();
+
   return (
     <div className="min-h-screen bg-muted/30 pb-8">
       {/* Header */}
@@ -139,18 +177,31 @@ export default function OrderTrackingPage() {
         {/* Success Message */}
         {order.status === "pending" && (
           <Card className="border-green-200 bg-green-50">
-            <CardContent className="flex items-center gap-4 py-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <CheckCircle className="h-6 w-6 text-green-600" />
+            <CardContent className="py-4">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                  <CheckCircle className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-green-800">
+                    Order Placed Successfully!
+                  </h2>
+                  <p className="text-green-700">
+                    Thank you for your order. Please send it to the restaurant via WhatsApp.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-lg font-semibold text-green-800">
-                  Order Placed Successfully!
-                </h2>
-                <p className="text-green-700">
-                  Thank you for your order. We&apos;ll notify you when it&apos;s confirmed.
-                </p>
-              </div>
+              {whatsappUrl && (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  Send Order via WhatsApp
+                </a>
+              )}
             </CardContent>
           </Card>
         )}

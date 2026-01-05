@@ -61,6 +61,7 @@ export default function SweetTemplate({
   const [showCart, setShowCart] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(categories[0]?.id || null);
   const [showSearch, setShowSearch] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   const categoryRefs = useRef<{ [key: string]: HTMLElement | null }>({});
 
@@ -213,6 +214,11 @@ export default function SweetTemplate({
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
+
+  // Add cache-busting timestamp to logo URL
+  const logoUrl = restaurant.logo_url
+    ? `${restaurant.logo_url}?t=${restaurant.updated_at || Date.now()}`
+    : null;
 
   // Sweet color palette
   const colors = {
@@ -452,11 +458,12 @@ export default function SweetTemplate({
                 boxShadow: "0 8px 24px rgba(139, 111, 71, 0.15)",
               }}
             >
-              {restaurant.logo_url ? (
+              {logoUrl && !logoError ? (
                 <img
-                  src={restaurant.logo_url}
+                  src={logoUrl}
                   alt={restaurant.name}
                   style={{ width: "100%", height: "100%", borderRadius: 24, objectFit: "cover" }}
+                  onError={() => setLogoError(true)}
                 />
               ) : (
                 <div
