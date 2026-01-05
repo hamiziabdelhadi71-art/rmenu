@@ -11,6 +11,7 @@ import type { Tables } from "@/types/database";
 // Import templates
 import AppetiteTemplate from "./templates/appetite";
 import SweetTemplate from "./templates/sweet";
+import BakeryTemplate from "./templates/bakery";
 
 type Restaurant = Tables<"restaurants">;
 type Category = Tables<"categories">;
@@ -114,6 +115,46 @@ export default function RestaurantPage() {
     }
   }, [searchParams]);
 
+  // Track page view
+  useEffect(() => {
+    if (!restaurant) return;
+
+    // Get or create a session ID for this visitor
+    let sessionId = sessionStorage.getItem("rmenu_session_id");
+    if (!sessionId) {
+      sessionId = crypto.randomUUID();
+      sessionStorage.setItem("rmenu_session_id", sessionId);
+    }
+
+    // Check if we've already tracked this restaurant in this session
+    const viewedKey = `rmenu_viewed_${restaurant.id}`;
+    const lastViewed = sessionStorage.getItem(viewedKey);
+    const now = Date.now();
+
+    // Only track once per hour per restaurant per session
+    if (lastViewed && now - parseInt(lastViewed) < 3600000) {
+      return;
+    }
+
+    // Track the view
+    supabase
+      .from("page_views")
+      .insert({
+        restaurant_id: restaurant.id,
+        page_path: `/${slug}`,
+        referrer: document.referrer || null,
+        user_agent: navigator.userAgent,
+        session_id: sessionId,
+      })
+      .then(({ error }) => {
+        if (error) {
+          console.error("Failed to track page view:", error);
+        } else {
+          sessionStorage.setItem(viewedKey, now.toString());
+        }
+      });
+  }, [restaurant, slug, supabase]);
+
   if (isLoading) {
     return (
       <>
@@ -188,6 +229,8 @@ export default function RestaurantPage() {
   switch (templateName) {
     case "sweet":
       return <SweetTemplate {...templateProps} />;
+    case "bakery":
+      return <BakeryTemplate {...templateProps} />;
     case "appetite":
     default:
       return <AppetiteTemplate {...templateProps} />;
