@@ -108,6 +108,7 @@ export default async function DashboardPage() {
     { data: orders30Days },
     { data: ordersWithSource },
     { count: pageViews30Days },
+    { data: ordersForChart },
   ] = await Promise.all([
     // Today's orders count
     supabase
@@ -155,6 +156,12 @@ export default async function DashboardPage() {
       .select("*", { count: "exact", head: true })
       .eq("restaurant_id", restaurant.id)
       .gte("viewed_at", thirtyDaysAgo.toISOString()),
+    // Orders with dates for chart
+    supabase
+      .from("orders")
+      .select("created_at")
+      .eq("restaurant_id", restaurant.id)
+      .gte("created_at", thirtyDaysAgo.toISOString()),
   ]);
 
   const todayRevenue =
@@ -184,6 +191,28 @@ export default async function DashboardPage() {
   // Get sorted sources by order count
   const sortedSources = Object.entries(sourceAnalytics)
     .sort((a, b) => b[1].count - a[1].count);
+
+  // Build chart data for last 30 days
+  const chartData: { date: string; count: number }[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    date.setHours(0, 0, 0, 0);
+    const dateStr = date.toISOString().split("T")[0];
+    chartData.push({ date: dateStr, count: 0 });
+  }
+
+  // Count orders per day
+  (ordersForChart || []).forEach((order) => {
+    const orderDate = new Date(order.created_at).toISOString().split("T")[0];
+    const dayData = chartData.find((d) => d.date === orderDate);
+    if (dayData) {
+      dayData.count += 1;
+    }
+  });
+
+  // Find max for scaling
+  const maxOrders = Math.max(...chartData.map((d) => d.count), 1);
 
   // Format dates for display
   const startDate = thirtyDaysAgo.toLocaleDateString("fr-FR", { month: "long", day: "numeric", year: "numeric" });
@@ -290,39 +319,60 @@ export default async function DashboardPage() {
                   <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#111827", margin: 0 }}>Commandes</h3>
                   <span style={{ fontSize: "11px", color: "#9ca3af" }}>Derniers 30 jours</span>
                 </div>
-                <button style={{
-                  width: "26px",
-                  height: "26px",
-                  borderRadius: "6px",
-                  border: "1px solid #e5e7eb",
-                  backgroundColor: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer"
-                }}>
-                  <Plus style={{ width: "14px", height: "14px", color: "#6b7280" }} />
-                </button>
+                <Link href="/dashboard/orders" style={{ textDecoration: "none" }}>
+                  <button style={{
+                    width: "26px",
+                    height: "26px",
+                    borderRadius: "6px",
+                    border: "1px solid #e5e7eb",
+                    backgroundColor: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer"
+                  }}>
+                    <Plus style={{ width: "14px", height: "14px", color: "#6b7280" }} />
+                  </button>
+                </Link>
               </div>
               <div style={{ padding: "16px" }}>
-                {/* Simple chart placeholder - shows empty state or bars */}
+                {/* Chart with real data */}
                 <div className="chart-bars" style={{
                   height: "80px",
                   paddingBottom: "6px",
-                  borderBottom: "1px solid #f3f4f6"
+                  borderBottom: "1px solid #f3f4f6",
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: "2px"
                 }}>
-                  {Array.from({ length: 30 }).map((_, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        flex: 1,
-                        backgroundColor: "#e5e7eb",
-                        borderRadius: "2px",
-                        height: "6px",
-                        minHeight: "4px"
-                      }}
-                    />
-                  ))}
+                  {chartData.map((day, i) => {
+                    const height = day.count > 0 ? Math.max((day.count / maxOrders) * 100, 8) : 6;
+                    const hasOrders = day.count > 0;
+                    return (
+                      <div
+                        key={i}
+                        title={`${new Date(day.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}: ${day.count} commande${day.count !== 1 ? "s" : ""}`}
+                        style={{
+                          flex: 1,
+                          backgroundColor: hasOrders ? "#22c55e" : "#e5e7eb",
+                          borderRadius: "2px",
+                          height: `${height}%`,
+                          minHeight: "4px",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease"
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+                {/* Chart labels */}
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px" }}>
+                  <span style={{ fontSize: "10px", color: "#9ca3af" }}>
+                    {new Date(chartData[0]?.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                  </span>
+                  <span style={{ fontSize: "10px", color: "#9ca3af" }}>
+                    {new Date(chartData[chartData.length - 1]?.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                  </span>
                 </div>
               </div>
             </div>
