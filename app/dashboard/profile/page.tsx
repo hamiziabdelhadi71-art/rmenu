@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [restaurant, setRestaurant] = useState<Tables<"restaurants"> | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const [countryCode, setCountryCode] = useState("+213");
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -21,6 +22,25 @@ export default function ProfilePage() {
     phone: "",
     logo_url: "",
   });
+
+  // Country codes list with Algeria first
+  const countryCodes = [
+    { code: "+213", country: "Algérie", flag: "🇩🇿" },
+    { code: "+212", country: "Maroc", flag: "🇲🇦" },
+    { code: "+216", country: "Tunisie", flag: "🇹🇳" },
+    { code: "+33", country: "France", flag: "🇫🇷" },
+    { code: "+1", country: "USA/Canada", flag: "🇺🇸" },
+    { code: "+44", country: "UK", flag: "🇬🇧" },
+    { code: "+49", country: "Allemagne", flag: "🇩🇪" },
+    { code: "+34", country: "Espagne", flag: "🇪🇸" },
+    { code: "+39", country: "Italie", flag: "🇮🇹" },
+    { code: "+32", country: "Belgique", flag: "🇧🇪" },
+    { code: "+41", country: "Suisse", flag: "🇨🇭" },
+    { code: "+966", country: "Arabie Saoudite", flag: "🇸🇦" },
+    { code: "+971", country: "Émirats", flag: "🇦🇪" },
+    { code: "+974", country: "Qatar", flag: "🇶🇦" },
+    { code: "+20", country: "Égypte", flag: "🇪🇬" },
+  ];
 
   const router = useRouter();
   const { toast } = useToast();
@@ -45,11 +65,29 @@ export default function ProfilePage() {
 
       if (data) {
         setRestaurant(data);
+
+        // Parse phone to extract country code
+        let phoneNumber = data.phone || "";
+        let detectedCountryCode = "+213"; // Default to Algeria
+
+        if (phoneNumber.startsWith("+")) {
+          // Find matching country code
+          const sortedCodes = [...countryCodes].sort((a, b) => b.code.length - a.code.length);
+          for (const cc of sortedCodes) {
+            if (phoneNumber.startsWith(cc.code)) {
+              detectedCountryCode = cc.code;
+              phoneNumber = phoneNumber.slice(cc.code.length).trim();
+              break;
+            }
+          }
+        }
+
+        setCountryCode(detectedCountryCode);
         setFormData({
           name: data.name || "",
           description: data.description || "",
           address: data.address || "",
-          phone: data.phone || "",
+          phone: phoneNumber,
           logo_url: data.logo_url || "",
         });
       }
@@ -83,6 +121,9 @@ export default function ProfilePage() {
         return;
       }
 
+      // Combine country code with phone number
+      const fullPhone = formData.phone ? `${countryCode}${formData.phone.replace(/^\s+/, "")}` : "";
+
       if (restaurant) {
         const { error } = await supabase
           .from("restaurants")
@@ -90,7 +131,7 @@ export default function ProfilePage() {
             name: formData.name,
             description: formData.description,
             address: formData.address,
-            phone: formData.phone,
+            phone: fullPhone,
             logo_url: formData.logo_url,
           })
           .eq("id", restaurant.id);
@@ -110,7 +151,7 @@ export default function ProfilePage() {
           slug,
           description: formData.description,
           address: formData.address,
-          phone: formData.phone,
+          phone: fullPhone,
           logo_url: formData.logo_url,
           is_active: true,
         });
@@ -455,13 +496,36 @@ export default function ProfilePage() {
               </div>
               <div>
                 <label style={labelStyle}>Numéro de téléphone</label>
-                <input
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                  placeholder="Entrez votre numéro de téléphone"
-                  style={inputStyle}
-                />
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    style={{
+                      ...inputStyle,
+                      width: "140px",
+                      flexShrink: 0,
+                      cursor: "pointer",
+                      appearance: "none",
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 10px center",
+                      paddingRight: "28px",
+                    }}
+                  >
+                    {countryCodes.map((cc) => (
+                      <option key={cc.code} value={cc.code}>
+                        {cc.flag} {cc.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/[^\d\s]/g, "") }))}
+                    placeholder="555 123 456"
+                    style={{ ...inputStyle, flex: 1 }}
+                  />
+                </div>
               </div>
             </div>
           </div>
