@@ -15,6 +15,7 @@ export default function ProfilePage() {
   const [restaurant, setRestaurant] = useState<Tables<"restaurants"> | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
   const [countryCode, setCountryCode] = useState("+213");
+  const [currency, setCurrency] = useState("DZD");
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -22,6 +23,22 @@ export default function ProfilePage() {
     phone: "",
     logo_url: "",
   });
+
+  // Currency list with Algeria first
+  const currencies = [
+    { code: "DZD", name: "Dinar Algérien", symbol: "د.ج", flag: "🇩🇿" },
+    { code: "MAD", name: "Dirham Marocain", symbol: "د.م.", flag: "🇲🇦" },
+    { code: "TND", name: "Dinar Tunisien", symbol: "د.ت", flag: "🇹🇳" },
+    { code: "EUR", name: "Euro", symbol: "€", flag: "🇪🇺" },
+    { code: "USD", name: "Dollar US", symbol: "$", flag: "🇺🇸" },
+    { code: "GBP", name: "Livre Sterling", symbol: "£", flag: "🇬🇧" },
+    { code: "SAR", name: "Riyal Saoudien", symbol: "ر.س", flag: "🇸🇦" },
+    { code: "AED", name: "Dirham Émirati", symbol: "د.إ", flag: "🇦🇪" },
+    { code: "QAR", name: "Riyal Qatari", symbol: "ر.ق", flag: "🇶🇦" },
+    { code: "EGP", name: "Livre Égyptienne", symbol: "ج.م", flag: "🇪🇬" },
+    { code: "CHF", name: "Franc Suisse", symbol: "CHF", flag: "🇨🇭" },
+    { code: "CAD", name: "Dollar Canadien", symbol: "C$", flag: "🇨🇦" },
+  ];
 
   // Country codes list with Algeria first
   const countryCodes = [
@@ -83,6 +100,7 @@ export default function ProfilePage() {
         }
 
         setCountryCode(detectedCountryCode);
+        setCurrency(data.currency || "DZD");
         setFormData({
           name: data.name || "",
           description: data.description || "",
@@ -133,6 +151,7 @@ export default function ProfilePage() {
             address: formData.address,
             phone: fullPhone,
             logo_url: formData.logo_url,
+            currency: currency,
           })
           .eq("id", restaurant.id);
 
@@ -153,6 +172,7 @@ export default function ProfilePage() {
           address: formData.address,
           phone: fullPhone,
           logo_url: formData.logo_url,
+          currency: currency,
           is_active: true,
         });
 
@@ -526,6 +546,29 @@ export default function ProfilePage() {
                     style={{ ...inputStyle, flex: 1 }}
                   />
                 </div>
+              </div>
+              <div style={{ marginTop: "12px" }}>
+                <label style={labelStyle}>Devise</label>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  style={{
+                    ...inputStyle,
+                    width: "100%",
+                    cursor: "pointer",
+                    appearance: "none",
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 10px center",
+                    paddingRight: "28px",
+                  }}
+                >
+                  {currencies.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.flag} {c.code} - {c.name} ({c.symbol})
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>

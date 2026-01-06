@@ -268,9 +268,9 @@ export default function SettingsPage() {
             <div style={cardContentStyle}>
               <div style={{ display: "grid", gap: "14px" }}>
                 <div>
-                  <label style={labelStyle}>Montant minimum de commande (DZD)</label>
+                  <label style={labelStyle}>Montant minimum de commande ({restaurant?.currency || "DZD"})</label>
                   <div style={{ position: "relative" }}>
-                    <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>DZD</span>
+                    <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>{restaurant?.currency || "DZD"}</span>
                     <input
                       type="number"
                       step="0.01"
@@ -291,9 +291,9 @@ export default function SettingsPage() {
                   </p>
                 </div>
                 <div>
-                  <label style={labelStyle}>Frais de livraison (DZD)</label>
+                  <label style={labelStyle}>Frais de livraison ({restaurant?.currency || "DZD"})</label>
                   <div style={{ position: "relative" }}>
-                    <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>DZD</span>
+                    <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "#6b7280", fontSize: "13px" }}>{restaurant?.currency || "DZD"}</span>
                     <input
                       type="number"
                       step="0.01"

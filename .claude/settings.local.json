@@ -24,7 +24,18 @@
       "Bash(findstr:*)",
       "Bash(npx supabase:*)",
       "Skill(frontend-design)",
-      "WebFetch(domain:www.take.app)"
+      "WebFetch(domain:www.take.app)",
+      "Bash(npx vercel --version)",
+      "Bash(npx vercel deploy --prod)",
+      "Bash(npx vercel login)",
+      "Bash(npx vercel deploy:*)",
+      "Bash(npx vercel env add:*)",
+      "Bash(gh:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(npx vercel:*)",
+      "Bash(mkdir:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

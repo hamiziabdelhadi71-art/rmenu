@@ -831,7 +831,7 @@ export default function BakeryTemplate({
                           fontWeight: 800,
                           color: primaryColor
                         }}>
-                          ${item.sizes && item.sizes.length > 0
+                          {restaurant.currency || "DZD"} {item.sizes && item.sizes.length > 0
                             ? Math.min(...item.sizes.map((s) => s.price)).toFixed(2)
                             : Number(item.base_price).toFixed(2)}
                         </span>
@@ -954,7 +954,7 @@ export default function BakeryTemplate({
                 )}
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 20, fontWeight: 800, color: primaryColor, marginBottom: 4 }}>
-                    ${hasProductSizes(selectedItem)
+                    {restaurant.currency || "DZD"} {hasProductSizes(selectedItem)
                       ? Math.min(...selectedItem.sizes!.map((s) => s.price)).toFixed(2)
                       : Number(selectedItem.base_price).toFixed(2)}
                   </div>
@@ -995,7 +995,7 @@ export default function BakeryTemplate({
                             {size.name}
                           </span>
                           <span style={{ fontSize: 13, color: isSelected ? primaryColor : "#666" }}>
-                            ${size.price.toFixed(2)}
+                            {restaurant.currency || "DZD"} {size.price.toFixed(2)}
                           </span>
                         </button>
                       );
@@ -1042,7 +1042,7 @@ export default function BakeryTemplate({
                             </span>
                             {price !== 0 && (
                               <span style={{ fontSize: 12, color: price > 0 ? "#10b981" : "#666" }}>
-                                {price > 0 ? "+" : ""}${Math.abs(price).toFixed(2)}
+                                {price > 0 ? "+" : ""}{restaurant.currency || "DZD"} {Math.abs(price).toFixed(2)}
                               </span>
                             )}
                           </button>
@@ -1149,7 +1149,7 @@ export default function BakeryTemplate({
                 <ShoppingCart style={{ width: 20, height: 20 }} />
                 <span>Add to Cart</span>
                 <span style={{ marginLeft: 4 }}>
-                  ${(hasProductSizes(selectedItem) ? calculateSizeBasedTotal() : calculateItemTotal()).toFixed(2)}
+                  {restaurant.currency || "DZD"} {(hasProductSizes(selectedItem) ? calculateSizeBasedTotal() : calculateItemTotal()).toFixed(2)}
                 </span>
               </button>
             </div>
@@ -1248,7 +1248,7 @@ export default function BakeryTemplate({
                         )}
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                           <span style={{ fontSize: 15, fontWeight: 700, color: primaryColor }}>
-                            ${((item.price + (item.selectedModifiers?.reduce((sum, m) => sum + m.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}
+                            {restaurant.currency || "DZD"} {((item.price + (item.selectedModifiers?.reduce((sum, m) => sum + m.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}
                           </span>
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                             <button
@@ -1296,7 +1296,7 @@ export default function BakeryTemplate({
                 <div style={{ padding: 16, borderTop: "1px solid #eee" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
                     <span style={{ fontSize: 16, color: "#666" }}>Subtotal</span>
-                    <span style={{ fontSize: 20, fontWeight: 700, color: "#111" }}>${subtotal.toFixed(2)}</span>
+                    <span style={{ fontSize: 20, fontWeight: 700, color: "#111" }}>{restaurant.currency || "DZD"} {subtotal.toFixed(2)}</span>
                   </div>
                   <Link href={`/${slug}/checkout`} style={{ textDecoration: "none" }}>
                     <button
@@ -1375,7 +1375,7 @@ export default function BakeryTemplate({
                 </div>
                 <span>View Cart</span>
               </div>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{restaurant.currency || "DZD"} {subtotal.toFixed(2)}</span>
             </button>
           </div>
         )}

@@ -834,10 +834,10 @@ export default function SweetTemplate({
                                   {item.sizes && item.sizes.length > 0 ? (
                                     <>
                                       <span style={{ fontSize: 12, fontWeight: 500, color: colors.textLight, fontFamily: "Nunito" }}>From </span>
-                                      ${Math.min(...item.sizes.map((s) => s.price)).toFixed(2)}
+                                      {restaurant.currency || "DZD"} {Math.min(...item.sizes.map((s) => s.price)).toFixed(2)}
                                     </>
                                   ) : (
-                                    `$${Number(item.base_price).toFixed(2)}`
+                                    `${restaurant.currency || "DZD"} ${Number(item.base_price).toFixed(2)}`
                                   )}
                                 </p>
                                 <Heart style={{ width: 18, height: 18, color: colors.pink }} />
@@ -985,10 +985,10 @@ export default function SweetTemplate({
                   {hasProductSizes(selectedItem) ? (
                     <>
                       <span style={{ fontSize: 14, fontWeight: 500, color: colors.textLight, fontFamily: "Nunito" }}>From </span>
-                      ${Math.min(...selectedItem.sizes!.map((s) => s.price)).toFixed(2)}
+                      {restaurant.currency || "DZD"} {Math.min(...selectedItem.sizes!.map((s) => s.price)).toFixed(2)}
                     </>
                   ) : (
-                    `$${Number(selectedItem.base_price).toFixed(2)}`
+                    `${restaurant.currency || "DZD"} ${Number(selectedItem.base_price).toFixed(2)}`
                   )}
                 </p>
                 {selectedItem.description && (
@@ -1055,7 +1055,7 @@ export default function SweetTemplate({
                             <span style={{ fontSize: 15, fontWeight: 600, color: colors.text }}>{size.name}</span>
                           </div>
                           <span className="sweet-heading" style={{ fontSize: 15, fontWeight: 700, color: colors.brown }}>
-                            ${size.price.toFixed(2)}
+                            {restaurant.currency || "DZD"} {size.price.toFixed(2)}
                           </span>
                         </button>
                       ))}
@@ -1135,7 +1135,7 @@ export default function SweetTemplate({
                               </div>
                               {price !== 0 && (
                                 <span style={{ fontSize: 14, fontWeight: 600, color: price > 0 ? "#4CAF50" : colors.textLight }}>
-                                  {price > 0 ? "+" : ""}${price.toFixed(2)}
+                                  {price > 0 ? "+" : ""}{restaurant.currency || "DZD"} {price.toFixed(2)}
                                 </span>
                               )}
                             </button>
@@ -1250,7 +1250,7 @@ export default function SweetTemplate({
                   }}
                 >
                   {areRequiredModifiersFilled() ? (
-                    <>Add to Basket - ${(hasProductSizes(selectedItem) ? calculateSizeBasedTotal() : calculateItemTotal()).toFixed(2)}</>
+                    <>Add to Basket - {restaurant.currency || "DZD"} {(hasProductSizes(selectedItem) ? calculateSizeBasedTotal() : calculateItemTotal()).toFixed(2)}</>
                   ) : (
                     "Select required options"
                   )}
@@ -1381,7 +1381,7 @@ export default function SweetTemplate({
                         )}
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                           <span className="sweet-heading" style={{ fontSize: 16, fontWeight: 700, color: colors.brown }}>
-                            ${((item.price + (item.selectedModifiers?.reduce((sum, m) => sum + m.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}
+                            {restaurant.currency || "DZD"} {((item.price + (item.selectedModifiers?.reduce((sum, m) => sum + m.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}
                           </span>
                           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                             <button
@@ -1433,7 +1433,7 @@ export default function SweetTemplate({
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
                     <span style={{ fontSize: 16, color: colors.textLight }}>Subtotal</span>
                     <span className="sweet-heading" style={{ fontSize: 24, fontWeight: 700, color: colors.text }}>
-                      ${subtotal.toFixed(2)}
+                      {restaurant.currency || "DZD"} {subtotal.toFixed(2)}
                     </span>
                   </div>
                   <Link href={`/${slug}/checkout`} style={{ textDecoration: "none" }}>
@@ -1515,7 +1515,7 @@ export default function SweetTemplate({
                 </div>
                 <span>View Basket</span>
               </div>
-              <span className="sweet-heading" style={{ fontWeight: 700 }}>${subtotal.toFixed(2)}</span>
+              <span className="sweet-heading" style={{ fontWeight: 700 }}>{restaurant.currency || "DZD"} {subtotal.toFixed(2)}</span>
             </button>
           </div>
         )}

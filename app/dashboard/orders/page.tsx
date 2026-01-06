@@ -332,7 +332,7 @@ export default function OrdersPage() {
                               {order.order_type === 'delivery' ? 'Delivery' : 'Pickup'}
                             </span>
                           </td>
-                          <td className="p-4 text-sm font-semibold text-right">${Number(order.total).toFixed(2)}</td>
+                          <td className="p-4 text-sm font-semibold text-right">{restaurant?.currency || "DZD"} {Number(order.total).toFixed(2)}</td>
                           <td className="p-4 text-center">
                             <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${config.color}`}>
                               <StatusIcon className="h-3 w-3" />
@@ -404,7 +404,7 @@ export default function OrdersPage() {
                             <span>
                               {item.quantity}x {item.item_name}
                             </span>
-                            <span>${Number(item.total_price).toFixed(2)}</span>
+                            <span>{restaurant?.currency || "DZD"} {Number(item.total_price).toFixed(2)}</span>
                           </li>
                         ))}
                       </ul>
@@ -413,7 +413,7 @@ export default function OrdersPage() {
                     {/* Order Total */}
                     <div className="flex items-center justify-between border-t pt-3 font-semibold">
                       <span>Total</span>
-                      <span>${Number(order.total).toFixed(2)}</span>
+                      <span>{restaurant?.currency || "DZD"} {Number(order.total).toFixed(2)}</span>
                     </div>
 
                     {/* Notes */}

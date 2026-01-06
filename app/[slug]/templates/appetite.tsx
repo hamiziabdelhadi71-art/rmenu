@@ -686,10 +686,10 @@ export default function AppetiteTemplate({
                                 {item.sizes && item.sizes.length > 0 ? (
                                   <>
                                     <span style={{ fontSize: 12, fontWeight: 500, color: "#888" }}>From </span>
-                                    ${Math.min(...item.sizes.map((s) => s.price)).toFixed(2)}
+                                    {restaurant.currency || "DZD"} {Math.min(...item.sizes.map((s) => s.price)).toFixed(2)}
                                   </>
                                 ) : (
-                                  `$${Number(item.base_price).toFixed(2)}`
+                                  `${restaurant.currency || "DZD"} ${Number(item.base_price).toFixed(2)}`
                                 )}
                               </p>
                             </div>
@@ -810,10 +810,10 @@ export default function AppetiteTemplate({
                   {hasProductSizes(selectedItem) ? (
                     <>
                       <span style={{ fontSize: 14, fontWeight: 500, color: "#888" }}>From </span>
-                      ${Math.min(...selectedItem.sizes!.map((s) => s.price)).toFixed(2)}
+                      {restaurant.currency || "DZD"} {Math.min(...selectedItem.sizes!.map((s) => s.price)).toFixed(2)}
                     </>
                   ) : (
-                    `$${Number(selectedItem.base_price).toFixed(2)}`
+                    `${restaurant.currency || "DZD"} ${Number(selectedItem.base_price).toFixed(2)}`
                   )}
                 </p>
                 {selectedItem.description && (
@@ -863,7 +863,7 @@ export default function AppetiteTemplate({
                             </div>
                             <span style={{ fontSize: 14, fontWeight: 500, color: "#111" }}>{size.name}</span>
                           </div>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: primaryColor }}>${size.price.toFixed(2)}</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: primaryColor }}>{restaurant.currency || "DZD"} {size.price.toFixed(2)}</span>
                         </button>
                       ))}
                     </div>
@@ -926,7 +926,7 @@ export default function AppetiteTemplate({
                               </div>
                               {price !== 0 && (
                                 <span style={{ fontSize: 14, fontWeight: 500, color: price > 0 ? "#22c55e" : "#888" }}>
-                                  {price > 0 ? "+" : ""}${price.toFixed(2)}
+                                  {price > 0 ? "+" : ""}{restaurant.currency || "DZD"} {price.toFixed(2)}
                                 </span>
                               )}
                             </button>
@@ -1032,7 +1032,7 @@ export default function AppetiteTemplate({
                   }}
                 >
                   {areRequiredModifiersFilled() ? (
-                    <>Add to Cart - ${(hasProductSizes(selectedItem) ? calculateSizeBasedTotal() : calculateItemTotal()).toFixed(2)}</>
+                    <>Add to Cart - {restaurant.currency || "DZD"} {(hasProductSizes(selectedItem) ? calculateSizeBasedTotal() : calculateItemTotal()).toFixed(2)}</>
                   ) : (
                     "Select required options"
                   )}
@@ -1130,7 +1130,7 @@ export default function AppetiteTemplate({
                         )}
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                           <span style={{ fontSize: 15, fontWeight: 700, color: primaryColor }}>
-                            ${((item.price + (item.selectedModifiers?.reduce((sum, m) => sum + m.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}
+                            {restaurant.currency || "DZD"} {((item.price + (item.selectedModifiers?.reduce((sum, m) => sum + m.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}
                           </span>
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                             <button
@@ -1178,7 +1178,7 @@ export default function AppetiteTemplate({
                 <div style={{ padding: 16, borderTop: "1px solid #eee" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
                     <span style={{ fontSize: 16, color: "#666" }}>Subtotal</span>
-                    <span style={{ fontSize: 20, fontWeight: 700, color: "#111" }}>${subtotal.toFixed(2)}</span>
+                    <span style={{ fontSize: 20, fontWeight: 700, color: "#111" }}>{restaurant.currency || "DZD"} {subtotal.toFixed(2)}</span>
                   </div>
                   <Link href={`/${slug}/checkout`} style={{ textDecoration: "none" }}>
                     <button
@@ -1257,7 +1257,7 @@ export default function AppetiteTemplate({
                 </div>
                 <span>View Cart</span>
               </div>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{restaurant.currency || "DZD"} {subtotal.toFixed(2)}</span>
             </button>
           </div>
         )}

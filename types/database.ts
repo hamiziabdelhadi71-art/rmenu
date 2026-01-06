@@ -25,6 +25,7 @@ export type Database = {
           delivery_fee: number;
           theme_primary_color: string;
           template_name: string | null;
+          currency: string;
           operating_hours: Json;
           delivery_zones: string[];
           created_at: string;
@@ -45,6 +46,7 @@ export type Database = {
           delivery_fee?: number;
           theme_primary_color?: string;
           template_name?: string | null;
+          currency?: string;
           operating_hours?: Json;
           delivery_zones?: string[];
           created_at?: string;
@@ -65,6 +67,7 @@ export type Database = {
           delivery_fee?: number;
           theme_primary_color?: string;
           template_name?: string | null;
+          currency?: string;
           operating_hours?: Json;
           delivery_zones?: string[];
           created_at?: string;

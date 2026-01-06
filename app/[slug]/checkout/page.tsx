@@ -71,7 +71,7 @@ export default function CheckoutPage() {
     }
 
     if (orderType === "delivery" && restaurant.minimum_order && subtotal < Number(restaurant.minimum_order)) {
-      toast({ title: "Minimum order not met", description: `Minimum order is $${Number(restaurant.minimum_order).toFixed(2)}`, variant: "destructive" });
+      toast({ title: "Minimum order not met", description: `Minimum order is ${restaurant.currency || "DZD"} ${Number(restaurant.minimum_order).toFixed(2)}`, variant: "destructive" });
       return;
     }
 
@@ -125,7 +125,7 @@ export default function CheckoutPage() {
 📋 *Order Details:*
 ${orderItemsList}
 
-💰 *Total: $${total.toFixed(2)}*
+💰 *Total: ${restaurant.currency || "DZD"} ${total.toFixed(2)}*
 
 👤 *Customer:* ${formData.customerName}
 📞 *Phone:* ${formData.customerPhone}
@@ -200,7 +200,7 @@ ${orderItemsList}
               >
                 {type === "delivery" ? <MapPin style={{ width: 18, height: 18, color: orderType === type ? primaryColor : "#888" }} /> : <Package style={{ width: 18, height: 18, color: orderType === type ? primaryColor : "#888" }} />}
                 <span style={{ fontSize: 14, fontWeight: 600, color: orderType === type ? primaryColor : "#333" }}>
-                  {type === "delivery" ? `Delivery ($${Number(restaurant.delivery_fee).toFixed(2)})` : "Pickup (Free)"}
+                  {type === "delivery" ? `Delivery (${restaurant.currency || "DZD"} ${Number(restaurant.delivery_fee).toFixed(2)})` : "Pickup (Free)"}
                 </span>
               </button>
             ))}
@@ -264,7 +264,7 @@ ${orderItemsList}
               style={{ width: "100%", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", background: "#fafafa", border: "none", cursor: "pointer" }}
             >
               <span style={{ fontSize: 14, fontWeight: 600, color: "#333" }}>
-                {items.length} item{items.length > 1 ? "s" : ""} • ${subtotal.toFixed(2)}
+                {items.length} item{items.length > 1 ? "s" : ""} • {restaurant?.currency || "DZD"} {subtotal.toFixed(2)}
               </span>
               {showOrderDetails ? <ChevronUp style={{ width: 18, height: 18, color: "#888" }} /> : <ChevronDown style={{ width: 18, height: 18, color: "#888" }} />}
             </button>
@@ -274,17 +274,17 @@ ${orderItemsList}
                 {items.map((item) => (
                   <div key={item.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#555", marginBottom: 6 }}>
                     <span>{item.quantity}x {item.name}</span>
-                    <span>${((item.price + (item.selectedModifiers?.reduce((sum, mod) => sum + mod.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}</span>
+                    <span>{restaurant?.currency || "DZD"} {((item.price + (item.selectedModifiers?.reduce((sum, mod) => sum + mod.priceAdjustment, 0) || 0)) * item.quantity).toFixed(2)}</span>
                   </div>
                 ))}
                 {taxAmount > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#888", marginTop: 8, paddingTop: 8, borderTop: "1px dashed #eee" }}>
-                    <span>Tax</span><span>${taxAmount.toFixed(2)}</span>
+                    <span>Tax</span><span>{restaurant?.currency || "DZD"} {taxAmount.toFixed(2)}</span>
                   </div>
                 )}
                 {orderType === "delivery" && deliveryFee > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#888" }}>
-                    <span>Delivery</span><span>${deliveryFee.toFixed(2)}</span>
+                    <span>Delivery</span><span>{restaurant?.currency || "DZD"} {deliveryFee.toFixed(2)}</span>
                   </div>
                 )}
               </div>
@@ -317,7 +317,7 @@ ${orderItemsList}
             ) : (
               <MessageCircle style={{ width: 22, height: 22 }} />
             )}
-            {isSubmitting ? "Processing..." : `Place Order • $${total.toFixed(2)}`}
+            {isSubmitting ? "Processing..." : `Place Order • ${restaurant?.currency || "DZD"} ${total.toFixed(2)}`}
           </button>
         </div>
       </div>

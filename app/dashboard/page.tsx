@@ -301,7 +301,7 @@ export default async function DashboardPage() {
                 </div>
                 <div>
                   <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "2px" }}>Vente</p>
-                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>DZD {revenue30Days.toFixed(2)}</p>
+                  <p style={{ fontSize: "20px", fontWeight: 600, color: "#111827", margin: 0 }}>{restaurant.currency || "DZD"} {revenue30Days.toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -465,7 +465,7 @@ export default async function DashboardPage() {
                             </div>
                             {/* Revenue */}
                             <p style={{ fontSize: "11px", color: "#6b7280", margin: "4px 0 0 0" }}>
-                              DZD {data.revenue.toFixed(2)} de ventes
+                              {restaurant.currency || "DZD"} {data.revenue.toFixed(2)} de ventes
                             </p>
                           </div>
                         </div>
@@ -545,7 +545,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className="order-item-right">
                         <span style={{ fontSize: "13px", fontWeight: 500, color: "#111827" }}>
-                          DZD {Number(order.total).toFixed(2)}
+                          {restaurant.currency || "DZD"} {Number(order.total).toFixed(2)}
                         </span>
                         <span style={{
                           padding: "3px 8px",

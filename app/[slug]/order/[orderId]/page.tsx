@@ -142,8 +142,8 @@ export default function OrderTrackingPage() {
 ${orderItemsList}
 
 💰 *Payment:*
-Subtotal: $${Number(order.subtotal).toFixed(2)}
-${Number(order.tax_amount) > 0 ? `Tax: $${Number(order.tax_amount).toFixed(2)}\n` : ""}${Number(order.delivery_fee) > 0 ? `Delivery: $${Number(order.delivery_fee).toFixed(2)}\n` : ""}*Total: $${Number(order.total).toFixed(2)}*
+Subtotal: ${restaurant?.currency || "DZD"} ${Number(order.subtotal).toFixed(2)}
+${Number(order.tax_amount) > 0 ? `Tax: ${restaurant?.currency || "DZD"} ${Number(order.tax_amount).toFixed(2)}\n` : ""}${Number(order.delivery_fee) > 0 ? `Delivery: ${restaurant?.currency || "DZD"} ${Number(order.delivery_fee).toFixed(2)}\n` : ""}*Total: ${restaurant?.currency || "DZD"} ${Number(order.total).toFixed(2)}*
 
 👤 *Customer:*
 Name: ${order.customer_name}
@@ -283,30 +283,30 @@ ${order.order_type === "delivery" && order.delivery_address ? `📍 *Address:* $
                       )}
                     </div>
                     <p className="font-medium">
-                      ${Number(item.total_price).toFixed(2)}
+                      {restaurant?.currency || "DZD"} {Number(item.total_price).toFixed(2)}
                     </p>
                   </div>
                 ))}
                 <div className="border-t pt-3 space-y-1">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
-                    <span>${Number(order.subtotal).toFixed(2)}</span>
+                    <span>{restaurant?.currency || "DZD"} {Number(order.subtotal).toFixed(2)}</span>
                   </div>
                   {Number(order.tax_amount) > 0 && (
                     <div className="flex justify-between text-sm">
                       <span>Tax</span>
-                      <span>${Number(order.tax_amount).toFixed(2)}</span>
+                      <span>{restaurant?.currency || "DZD"} {Number(order.tax_amount).toFixed(2)}</span>
                     </div>
                   )}
                   {Number(order.delivery_fee) > 0 && (
                     <div className="flex justify-between text-sm">
                       <span>Delivery Fee</span>
-                      <span>${Number(order.delivery_fee).toFixed(2)}</span>
+                      <span>{restaurant?.currency || "DZD"} {Number(order.delivery_fee).toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between font-semibold text-lg pt-2 border-t">
                     <span>Total</span>
-                    <span>${Number(order.total).toFixed(2)}</span>
+                    <span>{restaurant?.currency || "DZD"} {Number(order.total).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
