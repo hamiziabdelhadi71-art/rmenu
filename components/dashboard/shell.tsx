@@ -58,7 +58,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </button>
 
           <Link href="/dashboard" className="flex items-center">
-            <span className="text-lg font-semibold text-[#25262b]">FoodFlow</span>
+            <span className="text-lg font-semibold text-[#25262b]">HakMenu</span>
           </Link>
 
           <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5" />
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-[#25262b]">FoodFlow</span>
+              <span className="text-xl font-bold text-[#25262b]">HakMenu</span>
             </Link>
             <div className="ml-2 flex items-center gap-1 rounded-md bg-[#f8f9fa] px-3 py-1.5">
               <span className="text-sm font-medium text-[#25262b]">mopizza</span>
@@ -138,7 +138,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         >
           {/* Mobile Sidebar Header */}
           <div className="flex h-14 items-center justify-between border-b border-[#e9ecef] px-4 lg:hidden">
-            <span className="text-lg font-semibold text-[#25262b]">FoodFlow</span>
+            <span className="text-lg font-semibold text-[#25262b]">HakMenu</span>
             <button
               type="button"
               onClick={() => setMobileSidebarOpen(false)}

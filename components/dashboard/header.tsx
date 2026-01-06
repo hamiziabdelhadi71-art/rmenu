@@ -26,7 +26,7 @@ export function DashboardHeader({
         </button>
 
         <Link href="/dashboard" className="flex items-center">
-          <span className="text-lg font-bold text-foreground">FoodFlow</span>
+          <span className="text-lg font-bold text-foreground">HakMenu</span>
         </Link>
 
         <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ export function DashboardHeader({
             <Menu className="h-5 w-5" />
           </button>
           <Link href="/dashboard" className="flex items-center">
-            <span className="text-lg font-bold text-foreground">FoodFlow</span>
+            <span className="text-lg font-bold text-foreground">HakMenu</span>
           </Link>
         </div>
 

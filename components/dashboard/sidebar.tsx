@@ -40,7 +40,7 @@ export function DashboardSidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center gap-2 border-b px-6">
         <Utensils className="h-6 w-6 text-primary" />
-        <span className="text-xl font-bold">FoodFlow</span>
+        <span className="text-xl font-bold">HakMenu</span>
       </div>
 
       {/* Navigation */}
