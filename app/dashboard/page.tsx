@@ -117,13 +117,12 @@ export default async function DashboardPage() {
       .select("*", { count: "exact", head: true })
       .eq("restaurant_id", restaurant.id)
       .gte("created_at", today.toISOString()),
-    // Today's revenue
+    // Today's revenue (all orders count since we use WhatsApp for order management)
     supabase
       .from("orders")
       .select("total")
       .eq("restaurant_id", restaurant.id)
-      .gte("created_at", today.toISOString())
-      .in("status", ["confirmed", "preparing", "ready", "delivered"]),
+      .gte("created_at", today.toISOString()),
     // Recent orders (last 5)
     supabase
       .from("orders")
@@ -137,20 +136,18 @@ export default async function DashboardPage() {
       .select("*", { count: "exact", head: true })
       .eq("restaurant_id", restaurant.id)
       .gte("created_at", thirtyDaysAgo.toISOString()),
-    // 30 days revenue
+    // 30 days revenue (all orders count since we use WhatsApp for order management)
     supabase
       .from("orders")
       .select("total")
       .eq("restaurant_id", restaurant.id)
-      .gte("created_at", thirtyDaysAgo.toISOString())
-      .in("status", ["confirmed", "preparing", "ready", "delivered"]),
-    // Orders with source for analytics
+      .gte("created_at", thirtyDaysAgo.toISOString()),
+    // Orders with source for analytics (all orders count)
     supabase
       .from("orders")
       .select("source, total")
       .eq("restaurant_id", restaurant.id)
-      .gte("created_at", thirtyDaysAgo.toISOString())
-      .in("status", ["confirmed", "preparing", "ready", "delivered"]),
+      .gte("created_at", thirtyDaysAgo.toISOString()),
     // Page views in last 30 days
     supabase
       .from("page_views")
