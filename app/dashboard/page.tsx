@@ -13,6 +13,7 @@ import {
   Facebook,
   Link2,
   Globe,
+  ExternalLink,
 } from "lucide-react";
 import "./dashboard.css";
 
@@ -421,9 +422,16 @@ export default async function DashboardPage() {
                       const Icon = config.icon;
                       const totalOrders = Object.values(sourceAnalytics).reduce((sum, s) => sum + s.count, 0);
                       const percentage = totalOrders > 0 ? Math.round((data.count / totalOrders) * 100) : 0;
+                      const marketingUrl = source !== "direct" ? `/${restaurant.slug}?src=${source}` : `/${restaurant.slug}`;
 
                       return (
-                        <div key={source} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                        <Link
+                          key={source}
+                          href={marketingUrl}
+                          target="_blank"
+                          style={{ display: "flex", alignItems: "center", gap: "12px", textDecoration: "none", padding: "8px", margin: "-8px", borderRadius: "8px", transition: "background 0.2s" }}
+                          className="hover:bg-gray-50"
+                        >
                           {/* Icon */}
                           <div style={{
                             width: "36px",
@@ -468,7 +476,10 @@ export default async function DashboardPage() {
                               {restaurant.currency || "DZD"} {data.revenue.toFixed(2)} de ventes
                             </p>
                           </div>
-                        </div>
+
+                          {/* Open icon */}
+                          <ExternalLink style={{ width: "14px", height: "14px", color: "#9ca3af", flexShrink: 0 }} />
+                        </Link>
                       );
                     })}
                   </div>
