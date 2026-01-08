@@ -54,6 +54,13 @@ export default function RestaurantPage() {
       setRestaurant(restaurantData);
       cartStore.setRestaurant(slug, restaurantData.id);
 
+      // Set source AFTER setRestaurant to avoid race condition
+      // (setRestaurant can reset source when switching restaurants)
+      const source = searchParams.get("src") || searchParams.get("utm_source");
+      if (source) {
+        useCartStore.getState().setSource(source.toLowerCase());
+      }
+
       const { data: categoriesResult } = await supabase
         .from("categories")
         .select("*")
@@ -105,15 +112,7 @@ export default function RestaurantPage() {
     }
 
     loadData();
-  }, [slug, supabase]);
-
-  useEffect(() => {
-    const source = searchParams.get("src") || searchParams.get("utm_source");
-    if (source) {
-      // Use getState to avoid dependency on cartStore which causes infinite re-renders
-      useCartStore.getState().setSource(source.toLowerCase());
-    }
-  }, [searchParams]);
+  }, [slug, supabase, searchParams]);
 
   // Track page view
   useEffect(() => {
